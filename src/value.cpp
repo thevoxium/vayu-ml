@@ -60,6 +60,20 @@ std::shared_ptr<Value> Value::pow(double other) {
 std::shared_ptr<Value> pow(std::shared_ptr<Value> a, double b) {
   return a->pow(b);
 }
+
+std::shared_ptr<Value> Value::relu() {
+  auto out = std::make_shared<Value>(
+      std::max(this->data, 0.0),
+      std::set<std::shared_ptr<Value>>{shared_from_this()}, "relu");
+  auto self_ptr = shared_from_this();
+  out->_backward = [self_ptr, out]() {
+    self_ptr->grad += (out->data > 0) * out->grad;
+  };
+  return out;
+}
+
+std::shared_ptr<Value> relu(std::shared_ptr<Value> a) { return a->relu(); }
+
 void Value::backward() {
   std::vector<std::shared_ptr<Value>> topo;
   std::set<std::shared_ptr<Value>> visited;
