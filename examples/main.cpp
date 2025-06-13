@@ -5,7 +5,7 @@ int main() {
   auto a = make_value(2.0);
   auto b = make_value(-3.0);
 
-  auto c = a * b * a;
+  auto c = pow(a, 3.14) + b;
 
   c->backward();
 
