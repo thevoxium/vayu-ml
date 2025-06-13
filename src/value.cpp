@@ -61,6 +61,32 @@ std::shared_ptr<Value> pow(std::shared_ptr<Value> a, double b) {
   return a->pow(b);
 }
 
+std::shared_ptr<Value> Value::operator-() {
+  return (*this) * std::make_shared<Value>(-1);
+}
+
+std::shared_ptr<Value> Value::operator-(std::shared_ptr<Value> other) {
+  return (*this) + (-(*other));
+}
+
+std::shared_ptr<Value> Value::operator/(std::shared_ptr<Value> other) {
+  return (*this) * other->pow(-1);
+}
+
+std::shared_ptr<Value> operator/(std::shared_ptr<Value> a,
+                                 std::shared_ptr<Value> b) {
+  return a->operator/(b);
+}
+
+std::shared_ptr<Value> operator-(std::shared_ptr<Value> a,
+                                 std::shared_ptr<Value> b) {
+  return a->operator-(b);
+}
+
+std::shared_ptr<Value> operator-(std::shared_ptr<Value> a) {
+  return a->operator*(std::make_shared<Value>(-1));
+}
+
 std::shared_ptr<Value> Value::relu() {
   auto out = std::make_shared<Value>(
       std::max(this->data, 0.0),
