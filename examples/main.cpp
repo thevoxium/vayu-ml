@@ -5,11 +5,13 @@ int main() {
   auto a = make_value(2.0);
   auto b = make_value(-3.0);
 
-  auto c = a + b;
+  auto c = a * b * a;
 
   c->backward();
 
-  std::cout << *c << std::endl;
+  std::cout << "a: " << *a << std::endl;
+  std::cout << "b: " << *b << std::endl;
+  std::cout << "c: " << *c << std::endl;
 
   return 0;
 }

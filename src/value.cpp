@@ -29,6 +29,21 @@ std::shared_ptr<Value> operator+(std::shared_ptr<Value> a,
   return a->operator+(b);
 }
 
+std::shared_ptr<Value> Value::operator*(std::shared_ptr<Value> other) {
+  auto out = std::make_shared<Value>(
+      this->data * other->data,
+      std::set<std::shared_ptr<Value>>{shared_from_this(), other}, "*");
+  auto self_ptr = shared_from_this();
+  out->_backward = [self_ptr, other, out]() {
+    self_ptr->grad += (out->grad * other->data);
+    other->grad += (out->grad * self_ptr->data);
+  };
+  return out;
+}
+std::shared_ptr<Value> operator*(std::shared_ptr<Value> a,
+                                 std::shared_ptr<Value> b) {
+  return a->operator*(b);
+}
 void Value::backward() {
   std::vector<std::shared_ptr<Value>> topo;
   std::set<std::shared_ptr<Value>> visited;
