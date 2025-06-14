@@ -53,7 +53,7 @@ std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> a,
   return a->operator+(b);
 }
 
-std::shared_ptr<Tensor> Tensor::mm(std::shared_ptr<Tensor> other) {
+std::shared_ptr<Tensor> Tensor::mm(std::shared_ptr<Tensor> other, bool fast) {
   assert(this->shape.size() == 2 && other->shape.size() == 2);
   assert(this->shape[1] == other->shape[0]);
 
@@ -64,31 +64,29 @@ std::shared_ptr<Tensor> Tensor::mm(std::shared_ptr<Tensor> other) {
   auto out = std::make_shared<Tensor>(
       std::vector<size_t>{static_cast<size_t>(m), static_cast<size_t>(n)},
       requires_grad = this->requires_grad || other->requires_grad);
+  if (fast) {
+    cblas_sgemm(CblasRowMajor,         // Matrix storage order
+                CblasNoTrans,          // Don't transpose A
+                CblasNoTrans,          // Don't transpose B
+                m, n, k,               // Matrix dimensions
+                1.0f,                  // alpha = 1.0
+                this->data.data(), k,  // Matrix A and leading dimension
+                other->data.data(), n, // Matrix B and leading dimension
+                0.0f,                  // beta = 0.0 (don't add to C)
+                out->data.data(), n);  // Matrix C and leading dimension
+  } else {
 
-#if defined(USE_OPENBLAS) || defined(__APPLE__) || defined(USE_MKL)
-  std::cout << "using blas" << std::endl;
-  cblas_sgemm(CblasRowMajor,         // Matrix storage order
-              CblasNoTrans,          // Don't transpose A
-              CblasNoTrans,          // Don't transpose B
-              m, n, k,               // Matrix dimensions
-              1.0f,                  // alpha = 1.0
-              this->data.data(), k,  // Matrix A and leading dimension
-              other->data.data(), n, // Matrix B and leading dimension
-              0.0f,                  // beta = 0.0 (don't add to C)
-              out->data.data(), n);  // Matrix C and leading dimension
-#else
-
-  for (size_t i = 0; i < m; ++i) {
-    for (size_t j = 0; j < n; ++j) {
-      float sum = 0.0f;
-      for (size_t kk = 0; kk < k; ++kk) {
-        sum += this->data[i * k + kk] * other->data[kk * n + j];
+    for (size_t i = 0; i < m; ++i) {
+      for (size_t j = 0; j < n; ++j) {
+        float sum = 0.0f;
+        for (size_t kk = 0; kk < k; ++kk) {
+          sum += this->data[i * k + kk] * other->data[kk * n + j];
+        }
+        out->data[i * n + j] = sum;
       }
-      out->data[i * n + j] = sum;
     }
   }
 
-#endif
   return out;
 }
 

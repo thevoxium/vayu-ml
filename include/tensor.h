@@ -36,7 +36,7 @@ public:
   size_t numel() const;
 
   std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> other);
-  std::shared_ptr<Tensor> mm(std::shared_ptr<Tensor> other);
+  std::shared_ptr<Tensor> mm(std::shared_ptr<Tensor> other, bool fast = true);
 
   friend std::ostream &operator<<(std::ostream &os, const Tensor &t);
 };
