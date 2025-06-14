@@ -38,12 +38,14 @@ Tensor::Tensor(const std::vector<size_t> &shape, bool requires_grad)
 size_t Tensor::numel() const { return data.size(); }
 
 std::shared_ptr<Tensor> Tensor::operator+(std::shared_ptr<Tensor> other) {
-  assert(this->shape == other->shape);
-  auto result_shape = other->shape;
+  assert(can_broadcast(this->shape, other->shape));
+  auto result_shape = broadcast_shape(this->shape, other->shape);
+
   auto out = std::make_shared<Tensor>(result_shape, this->requires_grad ||
                                                         other->requires_grad);
   for (size_t i = 0; i < out->numel(); i++) {
-    out->data[i] = this->data[i] + other->data[i];
+    size_t idx1 = i % this->numel(), idx2 = i % other->numel();
+    out->data[i] = this->data[idx1] + other->data[idx2];
   }
   return out;
 }

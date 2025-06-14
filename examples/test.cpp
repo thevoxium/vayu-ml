@@ -1,6 +1,7 @@
 #include "../include/tensor.h"
 #include <ios>
 #include <iostream>
+#include <ostream>
 
 int main() {
   auto a = tensor({-0.1, 0.2}, {2, 1}, true);
@@ -14,6 +15,8 @@ int main() {
     }
   }
 
+  auto c = a + b;
+  std::cout << *c << std::endl;
   /*auto c = a * b;*/
   /*auto d = c->sigmoid();*/
   /*auto e = a->transpose();*/
