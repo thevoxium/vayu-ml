@@ -160,6 +160,18 @@ bool Tensor::is_broadcast_possible(const std::vector<size_t> shape1,
   return true;
 }
 
+std::vector<size_t> Tensor::broadcast_shape(const std::vector<size_t> shape1,
+                                            const std::vector<size_t> shape2) {
+  int max_size = std::max(shape1.size(), shape2.size());
+  std::vector<size_t> result_shape(max_size);
+  for (int i = 0; i < max_size; ++i) {
+    size_t dim1 = (i < shape1.size()) ? shape1[shape1.size() - 1 - i] : 1;
+    size_t dim2 = (i < shape2.size()) ? shape2[shape2.size() - 1 - i] : 1;
+    result_shape[max_size - 1 - i] = std::max(dim1, dim2);
+  }
+  return result_shape;
+}
+
 std::ostream &operator<<(std::ostream &os, const Tensor &t) {
   os << "Tensor(data: [";
   for (size_t i = 0; i < t.data.size(); i++) {

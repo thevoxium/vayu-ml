@@ -48,6 +48,8 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const Tensor &t);
   static bool is_broadcast_possible(const std::vector<size_t> shape1,
                                     const std::vector<size_t> shape2);
+  static std::vector<size_t> broadcast_shape(const std::vector<size_t> shape1,
+                                             const std::vector<size_t> shape2);
 };
 
 std::shared_ptr<Tensor> tensor(const std::vector<float> &data,
