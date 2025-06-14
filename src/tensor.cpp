@@ -33,6 +33,27 @@ Tensor::Tensor(const std::vector<size_t> &shape, bool requires_grad)
   }
   _backward = []() {};
 }
+
+std::shared_ptr<Tensor> random_tensor(const std::vector<size_t> &shape,
+                                      bool requires_grad, float min_val,
+                                      float max_val) {
+  size_t total_size = 1;
+  for (auto dim : shape) {
+    total_size *= dim;
+  }
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<float> dis(min_val, max_val);
+
+  std::vector<float> data(total_size);
+  for (size_t i = 0; i < total_size; ++i) {
+    data[i] = dis(gen);
+  }
+
+  return std::make_shared<Tensor>(data, shape, requires_grad);
+}
+
 size_t Tensor::numel() const { return data.size(); }
 
 std::shared_ptr<Tensor> Tensor::operator+(std::shared_ptr<Tensor> other) {
@@ -75,13 +96,36 @@ std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> a,
 }
 
 std::shared_ptr<Tensor> Tensor::operator*(std::shared_ptr<Tensor> other) {
-  assert(this->shape == other->shape);
-  auto result_shape = other->shape;
+  assert(can_broadcast(this->shape, other->shape));
+  auto result_shape = broadcast_shape(this->shape, other->shape);
+
   auto out = std::make_shared<Tensor>(result_shape, this->requires_grad ||
                                                         other->requires_grad);
   for (size_t i = 0; i < out->numel(); i++) {
-    out->data[i] = this->data[i] * other->data[i];
+    size_t idx1 = i % this->numel(), idx2 = i % other->numel();
+    out->data[i] = this->data[idx1] * other->data[idx2];
   }
+
+  out->_prev = {shared_from_this(), other};
+  out->_op = "*";
+
+  auto self_ptr = shared_from_this();
+
+  out->_backward = [self_ptr, other, out]() {
+    if (self_ptr->requires_grad) {
+      for (size_t i = 0; i < out->numel(); i++) {
+        size_t idx1 = i % self_ptr->numel(), idx2 = i % other->numel();
+        self_ptr->grad[idx1] += (out->grad[i] * other->data[idx2]);
+      }
+    }
+    if (out->requires_grad) {
+      for (size_t i = 0; i < out->numel(); i++) {
+        size_t idx2 = i % other->numel(), idx1 = i % self_ptr->numel();
+        other->grad[idx2] += (out->grad[i] * self_ptr->grad[idx1]);
+      }
+    }
+  };
+
   return out;
 }
 

@@ -6,6 +6,7 @@
 #include <future>
 #include <iostream>
 #include <memory>
+#include <random>
 #include <set>
 #include <string>
 #include <vector>
@@ -60,6 +61,10 @@ std::shared_ptr<Tensor> tensor(const std::vector<float> &data,
 
 std::shared_ptr<Tensor> tensor(const std::vector<size_t> &shape,
                                bool requires_grad);
+std::shared_ptr<Tensor> random_tensor(const std::vector<size_t> &shape,
+                                      bool requires_grad = true,
+                                      float min_val = 0.0f,
+                                      float max_value = 1.0f);
 std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> a,
                                   std::shared_ptr<Tensor> b);
 
