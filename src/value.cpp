@@ -3,7 +3,6 @@
 #include <cmath>
 #include <memory>
 #include <set>
-#include <strstream>
 #include <vector>
 
 Value::Value(double data, std::set<std::shared_ptr<Value>> children,
