@@ -25,6 +25,8 @@ public:
   Tensor(const std::vector<float> &data, const std::vector<size_t> &shape,
          bool requires_grad = true);
 
+  size_t numel() const;
+
   std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor>);
 
   friend std::ostream &operator<<(std::ostream &os, const Tensor &t);
@@ -36,4 +38,7 @@ std::shared_ptr<Tensor> tensor(const std::vector<float> &data,
 
 std::shared_ptr<Tensor> tensor(const std::vector<size_t> &shape,
                                bool requires_grad);
+std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> a,
+                                  std::shared_ptr<Tensor> b);
+
 #endif // !TENSOR_H
