@@ -49,8 +49,12 @@ d: Value(data=-3.66667, grad=-1)
 e: Value(data=3.66667, grad=1)
 ```
 
+## additonal commands to compile
 
 
+```bash
+g++ -std=c++17 -O3 -march=native -DUSE_OPENBLAS -I/opt/homebrew/opt/openblas/include -L/opt/homebrew/opt/openblas/lib examples/test.cpp src/tensor.cpp -lopenblas -o grad && ./grad
+```
 
 
 ## contributing

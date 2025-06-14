@@ -10,6 +10,14 @@
 #include <string>
 #include <vector>
 
+#ifdef USE_OPENBLAS
+#include <cblas.h>
+#elif defined(__APPLE__)
+#include <Accelerate/Accelerate.h>
+#elif defined(USE_MKL)
+#include <mkl.h>
+#endif
+
 class Tensor : public std::enable_shared_from_this<Tensor> {
 public:
   std::vector<float> data;

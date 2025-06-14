@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <iomanip>
 #include <ios>
+#include <iostream>
 #include <memory>
 #include <random>
 #include <vector>
@@ -56,11 +57,27 @@ std::shared_ptr<Tensor> Tensor::mm(std::shared_ptr<Tensor> other) {
   assert(this->shape.size() == 2 && other->shape.size() == 2);
   assert(this->shape[1] == other->shape[0]);
 
-  size_t m = this->shape[0], k = this->shape[1], n = other->shape[1];
+  int m = static_cast<int>(this->shape[0]);
+  int k = static_cast<int>(this->shape[1]);
+  int n = static_cast<int>(other->shape[1]);
 
-  auto out = std::make_shared<Tensor>(std::vector<size_t>{m, n},
-                                      requires_grad = this->requires_grad ||
-                                                      other->requires_grad);
+  auto out = std::make_shared<Tensor>(
+      std::vector<size_t>{static_cast<size_t>(m), static_cast<size_t>(n)},
+      requires_grad = this->requires_grad || other->requires_grad);
+
+#if defined(USE_OPENBLAS) || defined(__APPLE__) || defined(USE_MKL)
+  std::cout << "using blas" << std::endl;
+  cblas_sgemm(CblasRowMajor,         // Matrix storage order
+              CblasNoTrans,          // Don't transpose A
+              CblasNoTrans,          // Don't transpose B
+              m, n, k,               // Matrix dimensions
+              1.0f,                  // alpha = 1.0
+              this->data.data(), k,  // Matrix A and leading dimension
+              other->data.data(), n, // Matrix B and leading dimension
+              0.0f,                  // beta = 0.0 (don't add to C)
+              out->data.data(), n);  // Matrix C and leading dimension
+#else
+
   for (size_t i = 0; i < m; ++i) {
     for (size_t j = 0; j < n; ++j) {
       float sum = 0.0f;
@@ -70,6 +87,8 @@ std::shared_ptr<Tensor> Tensor::mm(std::shared_ptr<Tensor> other) {
       out->data[i * n + j] = sum;
     }
   }
+
+#endif
   return out;
 }
 
