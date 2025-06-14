@@ -52,6 +52,27 @@ std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> a,
   return a->operator+(b);
 }
 
+std::shared_ptr<Tensor> Tensor::mm(std::shared_ptr<Tensor> other) {
+  assert(this->shape.size() == 2 && other->shape.size() == 2);
+  assert(this->shape[1] == other->shape[0]);
+
+  size_t m = this->shape[0], k = this->shape[1], n = other->shape[1];
+
+  auto out = std::make_shared<Tensor>(std::vector<size_t>{m, n},
+                                      requires_grad = this->requires_grad ||
+                                                      other->requires_grad);
+  for (size_t i = 0; i < m; ++i) {
+    for (size_t j = 0; j < n; ++j) {
+      float sum = 0.0f;
+      for (size_t kk = 0; kk < k; ++kk) {
+        sum += this->data[i * k + kk] * other->data[kk * n + j];
+      }
+      out->data[i * n + j] = sum;
+    }
+  }
+  return out;
+}
+
 std::ostream &operator<<(std::ostream &os, const Tensor &t) {
   os << "Tensor(data: [";
   for (size_t i = 0; i < t.data.size(); i++) {
@@ -60,7 +81,7 @@ std::ostream &operator<<(std::ostream &os, const Tensor &t) {
       os << ", ";
   }
   os << "], requires_grad: " << std::boolalpha << t.requires_grad
-     << " shape: (";
+     << ", shape: (";
 
   for (size_t i = 0; i < t.shape.size(); i++) {
     os << t.shape[i];
