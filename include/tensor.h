@@ -40,6 +40,7 @@ public:
   std::shared_ptr<Tensor> mm(std::shared_ptr<Tensor> other, bool fast = true);
   std::shared_ptr<Tensor> relu();
   std::shared_ptr<Tensor> sigmoid();
+  std::shared_ptr<Tensor> sum();
 
   friend std::ostream &operator<<(std::ostream &os, const Tensor &t);
 };

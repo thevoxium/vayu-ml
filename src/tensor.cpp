@@ -121,6 +121,17 @@ std::shared_ptr<Tensor> Tensor::sigmoid() {
   return out;
 }
 
+std::shared_ptr<Tensor> Tensor::sum() {
+  auto out =
+      std::make_shared<Tensor>(std::vector<size_t>{1}, this->requires_grad);
+  float total_sum = 0.0;
+  for (size_t i = 0; i < this->numel(); i++) {
+    total_sum += this->data[i];
+  }
+  out->data[0] = total_sum;
+  return out;
+}
+
 std::ostream &operator<<(std::ostream &os, const Tensor &t) {
   os << "Tensor(data: [";
   for (size_t i = 0; i < t.data.size(); i++) {

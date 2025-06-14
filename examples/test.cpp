@@ -6,6 +6,7 @@ int main() {
   auto b = tensor({0.2, 0.3}, {2, 1}, true);
   auto c = a * b;
   auto d = c->sigmoid();
-  std::cout << *d << std::endl;
+  auto e = d->sum();
+  std::cout << *e << std::endl;
   return 0;
 }
