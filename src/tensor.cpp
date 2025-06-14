@@ -3,12 +3,9 @@
 #include <cassert>
 #include <cmath>
 #include <cstddef>
-#include <iomanip>
 #include <ios>
 #include <iostream>
-#include <iterator>
 #include <memory>
-#include <random>
 #include <vector>
 
 Tensor::Tensor(const std::vector<float> &data, const std::vector<size_t> &shape,
