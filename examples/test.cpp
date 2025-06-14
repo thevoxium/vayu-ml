@@ -8,5 +8,6 @@ int main() {
   auto d = c->sigmoid();
   auto e = a->transpose();
   std::cout << *e << std::endl;
+  std::cout << (*a)[0];
   return 0;
 }

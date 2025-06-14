@@ -37,6 +37,8 @@ public:
 
   std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> other);
+  float operator[](size_t idx);
+
   std::shared_ptr<Tensor> mm(std::shared_ptr<Tensor> other, bool fast = true);
   std::shared_ptr<Tensor> relu();
   std::shared_ptr<Tensor> sigmoid();

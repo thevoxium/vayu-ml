@@ -145,6 +145,8 @@ std::shared_ptr<Tensor> Tensor::transpose() {
   return out;
 }
 
+float Tensor::operator[](size_t idx) { return data[idx]; }
+
 std::ostream &operator<<(std::ostream &os, const Tensor &t) {
   os << "Tensor(data: [";
   for (size_t i = 0; i < t.data.size(); i++) {
