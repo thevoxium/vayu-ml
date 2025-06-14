@@ -105,6 +105,13 @@ std::shared_ptr<Tensor> Tensor::mm(std::shared_ptr<Tensor> other, bool fast) {
   return out;
 }
 
+std::shared_ptr<Tensor> Tensor::relu() {
+  auto out = std::make_shared<Tensor>(this->shape, this->requires_grad);
+  for (size_t i = 0; i < this->numel(); i++)
+    out->data[i] = std::max(0.0f, this->data[i]);
+  return out;
+}
+
 std::ostream &operator<<(std::ostream &os, const Tensor &t) {
   os << "Tensor(data: [";
   for (size_t i = 0; i < t.data.size(); i++) {
