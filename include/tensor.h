@@ -35,6 +35,7 @@ public:
 
   size_t numel() const;
 
+  std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> mm(std::shared_ptr<Tensor> other, bool fast = true);
 
@@ -50,4 +51,6 @@ std::shared_ptr<Tensor> tensor(const std::vector<size_t> &shape,
 std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> a,
                                   std::shared_ptr<Tensor> b);
 
+std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> a,
+                                  std::shared_ptr<Tensor> b);
 #endif // !TENSOR_H

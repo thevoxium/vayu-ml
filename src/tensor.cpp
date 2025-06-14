@@ -53,6 +53,21 @@ std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> a,
   return a->operator+(b);
 }
 
+std::shared_ptr<Tensor> Tensor::operator*(std::shared_ptr<Tensor> other) {
+  assert(this->shape == other->shape);
+  auto result_shape = other->shape;
+  auto out = std::make_shared<Tensor>(result_shape, this->requires_grad ||
+                                                        other->requires_grad);
+  for (size_t i = 0; i < out->numel(); i++) {
+    out->data[i] = this->data[i] * other->data[i];
+  }
+  return out;
+}
+
+std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> a,
+                                  std::shared_ptr<Tensor> b) {
+  return a->operator*(b);
+}
 std::shared_ptr<Tensor> Tensor::mm(std::shared_ptr<Tensor> other, bool fast) {
   assert(this->shape.size() == 2 && other->shape.size() == 2);
   assert(this->shape[1] == other->shape[0]);
