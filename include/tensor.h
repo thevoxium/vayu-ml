@@ -65,6 +65,9 @@ std::shared_ptr<Tensor> random_tensor(const std::vector<size_t> &shape,
                                       bool requires_grad = true,
                                       float min_val = 0.0f,
                                       float max_value = 1.0f);
+std::shared_ptr<Tensor> make_ones(const std::vector<size_t> &shape,
+                                  bool requires_grad = true);
+
 std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> a,
                                   std::shared_ptr<Tensor> b);
 
