@@ -147,6 +147,19 @@ std::shared_ptr<Tensor> Tensor::transpose() {
 
 float Tensor::operator[](size_t idx) { return data[idx]; }
 
+bool Tensor::is_broadcast_possible(const std::vector<size_t> shape1,
+                                   const std::vector<size_t> shape2) {
+  int max_size = std::max(shape1.size(), shape2.size());
+  for (int i = 0; i < max_size; ++i) {
+    int dim1 = (i < shape1.size()) ? shape1[shape1.size() - 1 - i] : 1;
+    int dim2 = (i < shape2.size()) ? shape2[shape2.size() - 1 - i] : 1;
+    if (dim1 != dim2 && dim1 != 1 && dim2 != 1) {
+      return false;
+    }
+  }
+  return true;
+}
+
 std::ostream &operator<<(std::ostream &os, const Tensor &t) {
   os << "Tensor(data: [";
   for (size_t i = 0; i < t.data.size(); i++) {
