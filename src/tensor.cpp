@@ -23,6 +23,25 @@ Tensor::Tensor(const std::vector<float> &data, const std::vector<size_t> &shape,
   _backward = []() {};
 }
 
+Tensor::Tensor(const std::vector<size_t> &shape, bool requires_grad)
+    : shape(shape), requires_grad(requires_grad), _op("") {
+  size_t total_size = 1;
+  for (auto dim : shape)
+    total_size *= dim;
+  data.resize(total_size, 0.0f);
+  if (requires_grad) {
+    grad.resize(total_size, 0.0f);
+  }
+  _backward = []() {};
+}
+std::shared_ptr<Tensor> Tensor::operator+(std::shared_ptr<Tensor> other) {
+  assert(this->shape == other->shape);
+  auto result_shape = other->shape;
+  auto out = std::make_shared<Tensor>(result_shape, this->requires_grad ||
+                                                        other->requires_grad);
+  return out;
+}
+
 std::ostream &operator<<(std::ostream &os, const Tensor &t) {
   os << "Tensor(data: [";
   for (size_t i = 0; i < t.data.size(); i++) {
@@ -46,4 +65,9 @@ std::shared_ptr<Tensor> tensor(const std::vector<float> &data,
                                const std::vector<size_t> &shape,
                                bool requires_grad) {
   return std::make_shared<Tensor>(data, shape, requires_grad);
+}
+
+std::shared_ptr<Tensor> tensor(const std::vector<size_t> &shape,
+                               bool requires_grad) {
+  return std::make_shared<Tensor>(shape, requires_grad);
 }

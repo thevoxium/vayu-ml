@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstddef>
 #include <functional>
+#include <future>
 #include <iostream>
 #include <memory>
 #include <set>
@@ -20,8 +21,11 @@ public:
   std::string _op;
   bool requires_grad;
 
+  Tensor(const std::vector<size_t> &shape, bool requires_grad = true);
   Tensor(const std::vector<float> &data, const std::vector<size_t> &shape,
          bool requires_grad = true);
+
+  std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor>);
 
   friend std::ostream &operator<<(std::ostream &os, const Tensor &t);
 };
@@ -30,4 +34,6 @@ std::shared_ptr<Tensor> tensor(const std::vector<float> &data,
                                const std::vector<size_t> &shape,
                                bool requires_grad);
 
+std::shared_ptr<Tensor> tensor(const std::vector<size_t> &shape,
+                               bool requires_grad);
 #endif // !TENSOR_H
