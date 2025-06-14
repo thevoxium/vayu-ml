@@ -132,6 +132,19 @@ std::shared_ptr<Tensor> Tensor::sum() {
   return out;
 }
 
+std::shared_ptr<Tensor> Tensor::transpose() {
+  auto out = std::make_shared<Tensor>(
+      std::vector<size_t>{this->shape[1], this->shape[0]}, this->requires_grad);
+  size_t rows = this->shape[0], cols = this->shape[1];
+
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      out->data[j * rows + i] = this->data[i * cols + j];
+    }
+  }
+  return out;
+}
+
 std::ostream &operator<<(std::ostream &os, const Tensor &t) {
   os << "Tensor(data: [";
   for (size_t i = 0; i < t.data.size(); i++) {

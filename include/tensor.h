@@ -41,6 +41,7 @@ public:
   std::shared_ptr<Tensor> relu();
   std::shared_ptr<Tensor> sigmoid();
   std::shared_ptr<Tensor> sum();
+  std::shared_ptr<Tensor> transpose();
 
   friend std::ostream &operator<<(std::ostream &os, const Tensor &t);
 };
