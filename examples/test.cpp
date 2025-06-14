@@ -9,13 +9,9 @@ int main() {
   std::cout << std::boolalpha << Tensor::can_broadcast(a->shape, b->shape)
             << std::endl;
 
-  if (Tensor::can_broadcast(a->shape, b->shape)) {
-    for (auto x : Tensor::broadcast_shape(a->shape, b->shape)) {
-      std::cout << x << ", ";
-    }
-  }
-
   auto c = a + b;
+  std::cout << *a << std::endl;
+  std::cout << *b << std::endl;
   std::cout << *c << std::endl;
   /*auto c = a * b;*/
   /*auto d = c->sigmoid();*/
