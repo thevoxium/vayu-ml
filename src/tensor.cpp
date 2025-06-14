@@ -175,15 +175,29 @@ std::vector<size_t> Tensor::broadcast_shape(const std::vector<size_t> shape1,
 }
 
 std::ostream &operator<<(std::ostream &os, const Tensor &t) {
-  os << "Tensor(data: [";
-  for (size_t i = 0; i < t.data.size(); i++) {
-    os << t.data[i];
-    if (i != t.data.size() - 1)
-      os << ", ";
-  }
-  os << "], requires_grad: " << std::boolalpha << t.requires_grad
-     << ", shape: (";
+  os << "Tensor(data: \n";
+  size_t rows = t.shape[0];
+  size_t cols = t.shape[1];
 
+  os << "[";
+  for (size_t i = 0; i < rows; i++) {
+    if (i > 0)
+      os << " "; // Indentation for subsequent rows
+    os << "[";
+    for (size_t j = 0; j < cols; j++) {
+      size_t index = i * cols + j;
+      os << t.data[index];
+      if (j != cols - 1)
+        os << ", ";
+    }
+    os << "]";
+    if (i != rows - 1)
+      os << ",\n";
+  }
+  os << "]";
+
+  os << ",\nrequires_grad: " << std::boolalpha << t.requires_grad
+     << ", shape: (";
   for (size_t i = 0; i < t.shape.size(); i++) {
     os << t.shape[i];
     if (i != t.shape.size() - 1)
