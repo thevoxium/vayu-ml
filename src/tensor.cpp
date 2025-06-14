@@ -147,8 +147,8 @@ std::shared_ptr<Tensor> Tensor::transpose() {
 
 float Tensor::operator[](size_t idx) { return data[idx]; }
 
-bool Tensor::is_broadcast_possible(const std::vector<size_t> shape1,
-                                   const std::vector<size_t> shape2) {
+bool Tensor::can_broadcast(const std::vector<size_t> shape1,
+                           const std::vector<size_t> shape2) {
   int max_size = std::max(shape1.size(), shape2.size());
   for (int i = 0; i < max_size; ++i) {
     int dim1 = (i < shape1.size()) ? shape1[shape1.size() - 1 - i] : 1;
