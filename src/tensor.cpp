@@ -121,7 +121,7 @@ std::shared_ptr<Tensor> Tensor::operator*(std::shared_ptr<Tensor> other) {
     if (out->requires_grad) {
       for (size_t i = 0; i < out->numel(); i++) {
         size_t idx2 = i % other->numel(), idx1 = i % self_ptr->numel();
-        other->grad[idx2] += (out->grad[i] * self_ptr->grad[idx1]);
+        other->grad[idx2] += (out->grad[i] * self_ptr->data[idx1]);
       }
     }
   };
