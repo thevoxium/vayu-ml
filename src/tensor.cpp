@@ -107,8 +107,17 @@ std::shared_ptr<Tensor> Tensor::mm(std::shared_ptr<Tensor> other, bool fast) {
 
 std::shared_ptr<Tensor> Tensor::relu() {
   auto out = std::make_shared<Tensor>(this->shape, this->requires_grad);
-  for (size_t i = 0; i < this->numel(); i++)
+  for (size_t i = 0; i < this->numel(); i++) {
     out->data[i] = std::max(0.0f, this->data[i]);
+  }
+  return out;
+}
+
+std::shared_ptr<Tensor> Tensor::sigmoid() {
+  auto out = std::make_shared<Tensor>(this->shape, this->requires_grad);
+  for (size_t i = 0; i < this->numel(); i++) {
+    out->data[i] = 1.0f / (1.0f + std::exp(-this->data[i]));
+  }
   return out;
 }
 
