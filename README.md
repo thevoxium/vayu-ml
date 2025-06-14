@@ -1,11 +1,13 @@
-# vayu.
+# vayu
 
-**lightweight deep learning framework to teach you how to backprop**
+**A lightweight deep learning framework built from scratch in C++ [WIP]**
 
 [![GitHub stars](https://img.shields.io/github/stars/thevoxium/vayu-ml?style=social)](https://github.com/thevoxium/vayu-ml)
 
 
-## quick start
+## Quick Start
+
+### Scalar Automatic Differentiation
 
 ```cpp
 #include "include/value.h"
@@ -20,43 +22,108 @@ int main() {
 
     e->backward();           // compute gradients
 
-    std::cout << "a: " << *a << std::endl;  // shows data and grad
-    std::cout << "b: " << *b << std::endl;
+    std::cout << "a: " << *a << std::endl;  // Value(data=2, grad=4)
+    std::cout << "b: " << *b << std::endl;  // Value(data=-3, grad=0.888889)
     
     return 0;
 }
 ```
 
+### Tensor Operations with Broadcasting
 
-## building
+```cpp
+#include "include/tensor.h"
+#include <iostream>
 
+int main() {
+    auto a = random_tensor({2, 2}, true);     // 2x2 random tensor
+    auto b = make_ones({2, 1}, true);         // 2x1 ones tensor
+    
+    auto c = a + b;                           // Broadcasting addition
+    auto d = a * c;                           // Element-wise multiplication
+    
+    d->backward();                            // Compute gradients
+    
+    // Access gradients
+    for (auto grad : a->grad) {
+        std::cout << grad << ", ";
+    }
+    
+    return 0;
+}
+```
+
+## Building
+
+### Basic Build
 ```bash
-# Clone the repository
 git clone https://github.com/thevoxium/vayu-ml.git
 cd vayu-ml
-
-# Compile and run
 g++ -std=c++17 -O2 -o grad examples/main.cpp src/*.cpp && ./grad
 ```
 
-## example output
-
-```
-a: Value(data=2, grad=4)
-b: Value(data=-3, grad=0.888889)
-c: Value(data=11, grad=0.333333)
-d: Value(data=-3.66667, grad=-1)
-e: Value(data=3.66667, grad=1)
+### With BLAS Optimization (macOS)
+```bash
+g++ -std=c++17 -O3 -march=native -DUSE_OPENBLAS \
+    -I/opt/homebrew/opt/openblas/include \
+    -L/opt/homebrew/opt/openblas/lib \
+    examples/test.cpp src/tensor.cpp -lopenblas -o grad && ./grad
 ```
 
-## additonal commands to compile
+### With Accelerate Framework (macOS)
+```bash
+g++ -std=c++17 -O3 -march=native -framework Accelerate \
+    examples/test.cpp src/tensor.cpp -o grad && ./grad
+```
 
+### BLAS Performance Benchmark
+Compare optimized vs non-optimized matrix multiplication:
 
 ```bash
-g++ -std=c++17 -O3 -march=native -DUSE_OPENBLAS -I/opt/homebrew/opt/openblas/include -L/opt/homebrew/opt/openblas/lib examples/test.cpp src/tensor.cpp -lopenblas -o grad && ./grad
+g++ -std=c++17 -O3 -DUSE_OPENBLAS examples/blas_mm.cpp src/tensor.cpp -lopenblas -o bench && ./bench
 ```
 
+Expected output shows significant speedups for larger matrices:
+```
+  Size   Non-BLAS       BLAS   Speedup
+----------------------------------------
+    10       12μs        8μs      1.5x
+   100      156μs       45μs      3.5x
+   256     1250μs      185μs      6.8x
+   512     9800μs      890μs     11.0x
+  1024    78000μs     4200μs     18.6x
+  2048   620000μs    28000μs     22.1x
+```
 
-## contributing
+## API Overview
 
-Contributions welcome! Open up a PR please.
+### Value Class (Scalar Operations)
+- `make_value(double)` - Create a scalar value
+- `+`, `-`, `*`, `/` - Basic arithmetic with automatic differentiation
+- `pow(value, exponent)` - Power operation
+- `relu()` - ReLU activation function
+- `backward()` - Compute gradients via backpropagation
+
+### Tensor Class (Multi-dimensional Arrays)
+- `tensor(data, shape, requires_grad)` - Create tensor from data
+- `random_tensor(shape)` - Create random tensor
+- `make_ones(shape)` - Create tensor filled with ones
+- `+`, `*` - Element-wise operations with broadcasting
+- `mm(other, fast=true)` - Matrix multiplication (BLAS-optimized)
+- `relu()`, `sigmoid()` - Activation functions
+- `sum()`, `transpose()` - Reduction and transformation operations
+- `backward()` - Automatic differentiation
+
+### Broadcasting Support
+Tensors automatically broadcast compatible shapes:
+- `(2, 3) + (1, 3)` → `(2, 3)`
+- `(4, 1) * (4, 5)` → `(4, 5)`
+
+
+## Contributing
+
+Contributions are welcome. Open a PR with your improvements!
+
+## License
+
+MIT License - feel free to use this for learning and teaching automatic differentiation concepts.
