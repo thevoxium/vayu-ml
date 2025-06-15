@@ -71,7 +71,7 @@ std::shared_ptr<Tensor> Tensor::log() {
     if (self_ptr->requires_grad) {
       for (size_t i = 0; i < self_ptr->numel(); i++) {
         if (self_ptr->data[i] > 0.0f)
-          self_ptr->grad[i] += out->grad[i] * out->data[i];
+          self_ptr->grad[i] += out->grad[i] * (1.0f / self_ptr->data[i]);
       }
     }
   };
