@@ -15,27 +15,6 @@
 
 ## Quick Start
 
-### Scalar Automatic Differentiation
-
-```cpp
-#include "include/value.h"
-#include <iostream>
-
-int main() {
-    auto a = make_value(2.0);
-    auto b = make_value(-3.0);
-    auto c = pow(a, 3) - b;  // c = a³ - b
-    auto d = c / b;          // d = c / b  
-    auto e = -d;             // e = -d
-
-    e->backward();           // compute gradients
-
-    std::cout << "a: " << *a << std::endl;  // Value(data=2, grad=4)
-    std::cout << "b: " << *b << std::endl;  // Value(data=-3, grad=0.888889)
-    
-    return 0;
-}
-```
 
 ### Tensor Operations with Broadcasting
 
