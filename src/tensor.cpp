@@ -185,6 +185,19 @@ std::shared_ptr<Tensor> Tensor::relu() {
   for (size_t i = 0; i < this->numel(); i++) {
     out->data[i] = std::max(0.0f, this->data[i]);
   }
+
+  out->_prev = {shared_from_this()};
+  out->_op = "relu";
+
+  auto self_ptr = shared_from_this();
+  out->_backward = [self_ptr, out]() {
+    if (self_ptr->requires_grad) {
+      for (size_t i = 0; i < self_ptr->numel(); i++) {
+        self_ptr->grad[i] += (out->data[i] > 0.0f ? 1.0f : 0.0f) * out->grad[i];
+      }
+    }
+  };
+
   return out;
 }
 
