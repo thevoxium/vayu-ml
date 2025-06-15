@@ -132,6 +132,18 @@ std::shared_ptr<Tensor> make_ones(const std::vector<size_t> &shape,
   std::vector<float> data(total_size, 1.0);
   return std::make_shared<Tensor>(data, shape, requires_grad);
 }
+
+std::shared_ptr<Tensor> make_const(const std::vector<size_t> &shape, float val,
+                                   bool requires_grad) {
+  size_t total_size = 1;
+  for (auto dim : shape) {
+    total_size *= dim;
+  }
+
+  std::vector<float> data(total_size, val);
+  return std::make_shared<Tensor>(data, shape, requires_grad);
+}
+
 std::shared_ptr<Tensor> random_tensor(const std::vector<size_t> &shape,
                                       bool requires_grad, float min_val,
                                       float max_val) {
