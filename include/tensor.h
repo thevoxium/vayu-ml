@@ -55,6 +55,8 @@ public:
   std::shared_ptr<Tensor> transpose();
   std::shared_ptr<Tensor> reshape(const std::vector<size_t> &shape);
 
+  std::shared_ptr<Tensor> mse_loss(std::shared_ptr<Tensor> target);
+
   static bool can_broadcast(const std::vector<size_t> shape1,
                             const std::vector<size_t> shape2);
   static std::vector<size_t> broadcast_shape(const std::vector<size_t> shape1,
@@ -78,6 +80,9 @@ std::shared_ptr<Tensor> make_ones(const std::vector<size_t> &shape,
 
 std::shared_ptr<Tensor> make_const(const std::vector<size_t> &shape, float val,
                                    bool requires_grad = true);
+
+std::shared_ptr<Tensor> mse_loss(std::shared_ptr<Tensor> predicted,
+                                 std::shared_ptr<Tensor> target);
 
 std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> a,
                                   std::shared_ptr<Tensor> b);
