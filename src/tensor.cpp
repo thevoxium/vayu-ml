@@ -256,6 +256,42 @@ std::shared_ptr<Tensor> Tensor::transpose() {
       out->data[j * rows + i] = this->data[i * cols + j];
     }
   }
+
+  out->_prev = {shared_from_this()};
+  out->_op = "transpose";
+  auto self_ptr = shared_from_this();
+
+  out->_backward = [self_ptr, out, rows, cols]() {
+    if (self_ptr->requires_grad) {
+      for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < cols; j++) {
+          self_ptr->grad[i * cols + j] += out->grad[j * rows + i];
+        }
+      }
+    }
+  };
+
+  return out;
+}
+
+std::shared_ptr<Tensor> Tensor::reshape(const std::vector<size_t> &shape) {
+  size_t newsize = 1;
+  for (auto dim : shape)
+    newsize *= dim;
+  assert(newsize == this->numel());
+
+  auto out = std::make_shared<Tensor>(shape, this->requires_grad);
+  out->data = this->data;
+  out->_prev = {shared_from_this()};
+  out->_op = "reshape";
+  auto self_ptr = shared_from_this();
+  out->_backward = [self_ptr, out]() {
+    if (self_ptr->requires_grad) {
+      for (size_t i = 0; i < self_ptr->numel(); i++) {
+        self_ptr->grad[i] += out->grad[i];
+      }
+    }
+  };
   return out;
 }
 

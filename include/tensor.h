@@ -47,6 +47,7 @@ public:
   std::shared_ptr<Tensor> sigmoid();
   std::shared_ptr<Tensor> sum();
   std::shared_ptr<Tensor> transpose();
+  std::shared_ptr<Tensor> reshape(const std::vector<size_t> &shape);
   void backward();
   friend std::ostream &operator<<(std::ostream &os, const Tensor &t);
   static bool can_broadcast(const std::vector<size_t> shape1,
