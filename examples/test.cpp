@@ -12,6 +12,7 @@ int main() {
   auto c = a - b;
   auto d = a * c;
   auto f = pow(a, 2);
-  std::cout << *f << std::endl;
+  auto g = exp(a);
+  std::cout << *g << std::endl;
   return 0;
 }

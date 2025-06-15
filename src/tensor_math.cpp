@@ -33,6 +33,32 @@ std::shared_ptr<Tensor> Tensor::pow(float exponent) {
   return out;
 }
 
+std::shared_ptr<Tensor> Tensor::exp() {
+  auto out = std::make_shared<Tensor>(this->shape, this->requires_grad);
+  for (size_t i = 0; i < this->numel(); i++) {
+    out->data[i] = std::exp(this->data[i]);
+  }
+
+  out->_prev = {shared_from_this()};
+  out->_op = "exp";
+
+  auto self_ptr = shared_from_this();
+
+  out->_backward = [self_ptr, out]() {
+    if (self_ptr->requires_grad) {
+      for (size_t i = 0; i < self_ptr->numel(); i++) {
+        self_ptr->grad[i] += out->grad[i] * out->data[i];
+      }
+    }
+  };
+
+  return out;
+}
+
 std::shared_ptr<Tensor> pow(std::shared_ptr<Tensor> base, float exponent) {
   return base->pow(exponent);
+}
+
+std::shared_ptr<Tensor> exp(std::shared_ptr<Tensor> base) {
+  return base->exp();
 }
