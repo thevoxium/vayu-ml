@@ -13,6 +13,7 @@ int main() {
   auto d = a * c;
   auto f = pow(a, 2);
   auto g = exp(a);
-  std::cout << *g << std::endl;
+  auto h = log(a);
+  std::cout << *h << std::endl;
   return 0;
 }
