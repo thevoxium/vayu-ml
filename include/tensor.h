@@ -49,6 +49,7 @@ public:
   std::shared_ptr<Tensor> transpose();
   std::shared_ptr<Tensor> reshape(const std::vector<size_t> &shape);
   void backward();
+  void zero_grad();
   friend std::ostream &operator<<(std::ostream &os, const Tensor &t);
   static bool can_broadcast(const std::vector<size_t> shape1,
                             const std::vector<size_t> shape2);

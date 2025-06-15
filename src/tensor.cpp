@@ -328,6 +328,12 @@ void Tensor::init_grad() {
   }
 }
 
+void Tensor::zero_grad() {
+  if (requires_grad) {
+    std::fill(grad.begin(), grad.end(), 0.0f);
+  }
+}
+
 void Tensor::backward() {
   std::vector<std::shared_ptr<Tensor>> topo;
   std::set<std::shared_ptr<Tensor>> visited;
