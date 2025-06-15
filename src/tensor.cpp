@@ -231,6 +231,18 @@ std::shared_ptr<Tensor> Tensor::sum() {
     total_sum += this->data[i];
   }
   out->data[0] = total_sum;
+
+  out->_prev = {shared_from_this()};
+  out->_op = "sum";
+
+  auto self_ptr = shared_from_this();
+  out->_backward = [self_ptr, out]() {
+    if (self_ptr->requires_grad) {
+      for (size_t i = 0; i < self_ptr->numel(); ++i) {
+        self_ptr->grad[i] += out->grad[0];
+      }
+    }
+  };
   return out;
 }
 
