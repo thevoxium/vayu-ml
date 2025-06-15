@@ -138,6 +138,20 @@ std::shared_ptr<Tensor> Tensor::operator*(std::shared_ptr<Tensor> other) {
 
   return out;
 }
+std::shared_ptr<Tensor> Tensor::operator-(std::shared_ptr<Tensor> other) {
+  auto neg_one =
+      make_ones(other->shape, false); // Don't need gradients for constant
+  for (auto &val : neg_one->data) {
+    val = -1.0f;
+  }
+
+  auto neg_other = neg_one * other;
+  return shared_from_this() + neg_other;
+}
+std::shared_ptr<Tensor> operator-(std::shared_ptr<Tensor> a,
+                                  std::shared_ptr<Tensor> b) {
+  return a->operator-(b);
+}
 
 std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> a,
                                   std::shared_ptr<Tensor> b) {

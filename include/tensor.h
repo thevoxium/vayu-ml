@@ -38,6 +38,8 @@ public:
 
   std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> other);
+  std::shared_ptr<Tensor> operator-(std::shared_ptr<Tensor> other);
+
   float operator[](size_t idx);
 
   void init_grad();
@@ -73,6 +75,8 @@ std::shared_ptr<Tensor> make_ones(const std::vector<size_t> &shape,
 std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> a,
                                   std::shared_ptr<Tensor> b);
 
+std::shared_ptr<Tensor> operator-(std::shared_ptr<Tensor> a,
+                                  std::shared_ptr<Tensor> b);
 std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> a,
                                   std::shared_ptr<Tensor> b);
 #endif // !TENSOR_H
