@@ -44,6 +44,7 @@ public:
 
   void init_grad();
 
+  void clear_graph();
   std::shared_ptr<Tensor> mm(std::shared_ptr<Tensor> other, bool fast = true);
   std::shared_ptr<Tensor> relu();
   std::shared_ptr<Tensor> sigmoid();

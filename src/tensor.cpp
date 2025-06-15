@@ -138,16 +138,42 @@ std::shared_ptr<Tensor> Tensor::operator*(std::shared_ptr<Tensor> other) {
 
   return out;
 }
+
 std::shared_ptr<Tensor> Tensor::operator-(std::shared_ptr<Tensor> other) {
-  auto neg_one =
-      make_ones(other->shape, false); // Don't need gradients for constant
-  for (auto &val : neg_one->data) {
-    val = -1.0f;
+  assert(can_broadcast(this->shape, other->shape));
+  auto result_shape = broadcast_shape(this->shape, other->shape);
+
+  auto out = std::make_shared<Tensor>(result_shape, this->requires_grad ||
+                                                        other->requires_grad);
+
+  // Direct subtraction without intermediate tensors
+  for (size_t i = 0; i < out->numel(); i++) {
+    size_t idx1 = i % this->numel(), idx2 = i % other->numel();
+    out->data[i] = this->data[idx1] - other->data[idx2];
   }
 
-  auto neg_other = neg_one * other;
-  return shared_from_this() + neg_other;
+  out->_prev = {shared_from_this(), other};
+  out->_op = "-";
+  auto self_ptr = shared_from_this();
+
+  out->_backward = [self_ptr, other, out]() {
+    if (self_ptr->requires_grad) {
+      for (size_t i = 0; i < out->numel(); i++) {
+        size_t idx = i % self_ptr->numel();
+        self_ptr->grad[idx] += out->grad[i]; // +1 for subtraction
+      }
+    }
+    if (other->requires_grad) {
+      for (size_t i = 0; i < out->numel(); i++) {
+        size_t idx = i % other->numel();
+        other->grad[idx] -= out->grad[i]; // -1 for subtraction
+      }
+    }
+  };
+
+  return out;
 }
+
 std::shared_ptr<Tensor> operator-(std::shared_ptr<Tensor> a,
                                   std::shared_ptr<Tensor> b) {
   return a->operator-(b);
@@ -409,6 +435,27 @@ void Tensor::zero_grad() {
   }
 }
 
+void Tensor::clear_graph() {
+  std::set<std::shared_ptr<Tensor>> visited;
+
+  std::function<void(std::shared_ptr<Tensor>)> clear_recursive =
+      [&](std::shared_ptr<Tensor> node) {
+        if (visited.find(node) != visited.end())
+          return;
+        visited.insert(node);
+
+        // Recursively clear children first
+        for (auto child : node->_prev) {
+          clear_recursive(child);
+        }
+
+        // Clear this node
+        node->_prev.clear();
+        node->_backward = []() {};
+      };
+
+  clear_recursive(shared_from_this());
+}
 void Tensor::backward() {
   std::vector<std::shared_ptr<Tensor>> topo;
   std::set<std::shared_ptr<Tensor>> visited;
