@@ -5,8 +5,8 @@
 
 Linear::Linear(size_t in_dim, size_t out_dim)
     : in_dim(in_dim), out_dim(out_dim) {
-  float limit = -6.0f / (in_dim + out_dim);
-  weights = random_tensor({in_dim, out_dim}, -limit, limit);
+  float limit = std::sqrt(6.0f / (in_dim + out_dim));
+  weights = random_tensor({in_dim, out_dim}, true, -limit, limit);
   bias = tensor({out_dim}, true);
 }
 
