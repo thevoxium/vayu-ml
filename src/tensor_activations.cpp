@@ -24,6 +24,8 @@ std::shared_ptr<Tensor> Tensor::relu() {
   return out;
 }
 
+std::shared_ptr<Tensor> relu(std::shared_ptr<Tensor> a) { return a->relu(); }
+
 std::shared_ptr<Tensor> Tensor::sigmoid() {
   auto out = std::make_shared<Tensor>(this->shape, this->requires_grad);
   for (size_t i = 0; i < this->numel(); i++) {
@@ -44,4 +46,8 @@ std::shared_ptr<Tensor> Tensor::sigmoid() {
   };
 
   return out;
+}
+
+std::shared_ptr<Tensor> sigmoid(std::shared_ptr<Tensor> a) {
+  return a->sigmoid();
 }

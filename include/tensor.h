@@ -1,5 +1,6 @@
 #ifndef TENSOR_H
 #define TENSOR_H
+#include <Security/SecSharedCredential.h>
 #include <cassert>
 #include <cstddef>
 #include <functional>
@@ -91,6 +92,9 @@ std::shared_ptr<Tensor> operator-(std::shared_ptr<Tensor> a,
                                   std::shared_ptr<Tensor> b);
 std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> a,
                                   std::shared_ptr<Tensor> b);
+
+std::shared_ptr<Tensor> relu(std::shared_ptr<Tensor> a);
+std::shared_ptr<Tensor> sigmoid(std::shared_ptr<Tensor> a);
 
 std::shared_ptr<Tensor> pow(std::shared_ptr<Tensor> base, float exponent);
 std::shared_ptr<Tensor> exp(std::shared_ptr<Tensor> base);
