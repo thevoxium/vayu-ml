@@ -1,6 +1,5 @@
 #ifndef TENSOR_H
 #define TENSOR_H
-#include <Security/SecSharedCredential.h>
 #include <cassert>
 #include <cstddef>
 #include <functional>
