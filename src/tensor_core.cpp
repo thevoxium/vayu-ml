@@ -207,3 +207,24 @@ std::shared_ptr<Tensor> tensor(const std::vector<size_t> &shape,
                                bool requires_grad) {
   return std::make_shared<Tensor>(shape, requires_grad);
 }
+
+std::shared_ptr<Tensor> asvector(const std::vector<std::vector<float>> &input,
+                                 bool requires_grad) {
+  if (input.empty() || input[0].empty()) {
+    return std::make_shared<Tensor>(std::vector<size_t>{0, 0}, requires_grad);
+  }
+  size_t rows = input.size(), cols = input[0].size();
+  for (const auto &row : input) {
+    if (row.size() != cols) {
+      throw std::invalid_argument("All rows must have the same length");
+    }
+  }
+  auto out =
+      std::make_shared<Tensor>(std::vector<size_t>{rows, cols}, requires_grad);
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
+      out->data[i * cols + j] = input[i][j];
+    }
+  }
+  return out;
+}
