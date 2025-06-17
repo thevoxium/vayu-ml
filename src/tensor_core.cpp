@@ -229,8 +229,8 @@ std::shared_ptr<Tensor> asvector(const std::vector<std::vector<float>> &input,
   return out;
 }
 
-std::shared_ptr<Tensor> arrange(int start, int end, size_t step,
-                                bool requires_grad) {
+std::shared_ptr<Tensor> range(int start, int end, size_t step,
+                              bool requires_grad) {
   auto out = std::make_shared<Tensor>(
       std::vector<size_t>{1, (end - start + step - 1) / step}, requires_grad);
   int curr = start;
