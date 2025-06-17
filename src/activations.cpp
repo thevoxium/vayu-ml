@@ -13,3 +13,9 @@ std::shared_ptr<Tensor> Sigmoid::forward(std::shared_ptr<Tensor> input) {
 }
 void Sigmoid::zero_grad() {}
 std::vector<std::shared_ptr<Tensor>> Sigmoid::parameters() { return {}; }
+
+std::shared_ptr<Tensor> Tanh::forward(std::shared_ptr<Tensor> input) {
+  return input->tanh();
+}
+void Tanh::zero_grad() {}
+std::vector<std::shared_ptr<Tensor>> Tanh::parameters() { return {}; }

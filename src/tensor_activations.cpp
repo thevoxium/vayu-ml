@@ -101,3 +101,26 @@ std::shared_ptr<Tensor> Tensor::sigmoid() {
 std::shared_ptr<Tensor> sigmoid(std::shared_ptr<Tensor> a) {
   return a->sigmoid();
 }
+
+std::shared_ptr<Tensor> Tensor::tanh() {
+  auto out = std::make_shared<Tensor>(this->shape, this->requires_grad);
+  for (size_t i = 0; i < this->numel(); i++) {
+    out->data[i] = std::tanh(this->data[i]);
+  }
+
+  out->_prev = {shared_from_this()};
+  out->_op = "tanh";
+
+  auto self_ptr = shared_from_this();
+  out->_backward = [self_ptr, out]() {
+    if (self_ptr->requires_grad) {
+      for (size_t i = 0; i < self_ptr->numel(); i++) {
+        self_ptr->grad[i] += (1 - out->data[i] * out->data[i]) * out->grad[i];
+      }
+    }
+  };
+
+  return out;
+}
+
+std::shared_ptr<Tensor> tanh(std::shared_ptr<Tensor> a) { return a->tanh(); }

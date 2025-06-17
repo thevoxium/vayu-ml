@@ -20,4 +20,10 @@ public:
   std::vector<std::shared_ptr<Tensor>> parameters() override;
 };
 
+class Tanh : public Layer {
+  std::shared_ptr<Tensor> forward(std::shared_ptr<Tensor> input) override;
+  void zero_grad() override;
+  std::vector<std::shared_ptr<Tensor>> parameters() override;
+};
+
 #endif // ACTIVATIONS_H
