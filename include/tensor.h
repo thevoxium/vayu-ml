@@ -101,4 +101,12 @@ std::shared_ptr<Tensor> pow(std::shared_ptr<Tensor> base, float exponent);
 std::shared_ptr<Tensor> exp(std::shared_ptr<Tensor> base);
 std::shared_ptr<Tensor> log(std::shared_ptr<Tensor> num);
 
+template <typename T> inline bool is_tensor(const T &obj) {
+  if constexpr (std::is_same_v<T, std::shared_ptr<Tensor>>) {
+    return obj != nullptr;
+  } else {
+    return false;
+  }
+}
+
 #endif // !TENSOR_H
