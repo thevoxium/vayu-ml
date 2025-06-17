@@ -3,3 +3,4 @@
 grad
 tests/
 benchmark_results.csv
+.clangd
