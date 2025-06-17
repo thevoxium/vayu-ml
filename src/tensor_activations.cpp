@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
+#include <cstdlib>
 #include <memory>
 #ifdef __APPLE__
 #include <arm_neon.h>
@@ -105,9 +106,12 @@ std::shared_ptr<Tensor> sigmoid(std::shared_ptr<Tensor> a) {
 std::shared_ptr<Tensor> Tensor::tanh() {
   auto out = std::make_shared<Tensor>(this->shape, this->requires_grad);
   for (size_t i = 0; i < this->numel(); i++) {
-    out->data[i] = std::tanh(this->data[i]);
+    if (std::abs(this->data[i]) < 3) {
+      float x2 = this->data[i] * this->data[i];
+      out->data[i] = (this->data[i] * (27.0f + x2)) / (27.0f + 9.0f * x2);
+    } else
+      out->data[i] = std::tanh(this->data[i]);
   }
-
   out->_prev = {shared_from_this()};
   out->_op = "tanh";
 
