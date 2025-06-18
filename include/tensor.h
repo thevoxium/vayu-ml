@@ -21,6 +21,9 @@
 #endif
 
 class Tensor : public std::enable_shared_from_this<Tensor> {
+private:
+  size_t cached_size;
+
 public:
   std::vector<float> data;
   std::vector<float> grad;
@@ -34,7 +37,7 @@ public:
   Tensor(const std::vector<float> &data, const std::vector<size_t> &shape,
          bool requires_grad = true);
 
-  size_t numel() const;
+  size_t numel() const { return cached_size; }
   std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> operator-(std::shared_ptr<Tensor> other);

@@ -254,6 +254,8 @@ int main() {
       loss->backward();
       optimizer.step();
 
+      loss->clear_graph();
+
       // Update statistics
       float batch_loss = loss->data[0];
       epoch_loss += batch_loss;

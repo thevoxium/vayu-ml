@@ -1,4 +1,8 @@
 .DS_Store
+grad*
+grad.dSYM/
+grad.prof
+profile_graph.pdf
 *.o
 grad
 tests/

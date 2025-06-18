@@ -11,30 +11,32 @@
 Tensor::Tensor(const std::vector<float> &data, const std::vector<size_t> &shape,
                bool requires_grad)
     : data(data), shape(shape), requires_grad(requires_grad), _op("") {
-  size_t total_size = 1;
+  cached_size = 1;
   for (auto dim : shape)
-    total_size *= dim;
-  assert(data.size() == total_size);
+    cached_size *= dim;
+  assert(data.size() == cached_size);
 
   if (requires_grad) {
-    grad.resize(total_size, 0.0f);
+    grad.reserve(cached_size);
+    grad.resize(cached_size, 0.0f);
   }
   _backward = []() {};
 }
 
 Tensor::Tensor(const std::vector<size_t> &shape, bool requires_grad)
     : shape(shape), requires_grad(requires_grad), _op("") {
-  size_t total_size = 1;
+  cached_size = 1;
   for (auto dim : shape)
-    total_size *= dim;
-  data.resize(total_size, 0.0f);
+    cached_size *= dim;
+  data.reserve(cached_size);
+  data.resize(cached_size, 0.0f);
   if (requires_grad) {
-    grad.resize(total_size, 0.0f);
+    grad.reserve(cached_size);
+    grad.resize(cached_size, 0.0f);
   }
+
   _backward = []() {};
 }
-
-size_t Tensor::numel() const { return data.size(); }
 
 float Tensor::operator[](size_t idx) { return data[idx]; }
 
