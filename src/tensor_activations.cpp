@@ -1,5 +1,6 @@
 #include "../include/tensor.h"
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <cstddef>
 #include <cstdlib>
@@ -131,23 +132,25 @@ std::shared_ptr<Tensor> Tensor::tanh() {
 std::shared_ptr<Tensor> tanh(std::shared_ptr<Tensor> a) { return a->tanh(); }
 
 std::shared_ptr<Tensor> Tensor::softmax() {
+  assert(this->shape.size() == 2);
   auto out = std::make_shared<Tensor>(this->shape, this->requires_grad);
   size_t batch_size = this->shape[0], num_classes = this->shape[1];
   for (size_t b = 0; b < batch_size; b++) {
     float max_val = -std::numeric_limits<float>::infinity();
+    size_t base = b * num_classes;
     for (size_t c = 0; c < num_classes; c++) {
-      max_val = std::max(max_val, this->data[b * num_classes + c]);
+      max_val = std::max(max_val, this->data[base + c]);
     }
 
     float sum = 0.0f;
 
     for (size_t c = 0; c < num_classes; c++) {
-      float val = expf(this->data[b * num_classes + c] - max_val);
+      float val = expf(this->data[base + c] - max_val);
       sum += val;
-      out->data[b * num_classes + c] = val;
+      out->data[base + c] = val;
     }
     for (size_t c = 0; c < num_classes; c++) {
-      out->data[b * num_classes + c] /= sum;
+      out->data[base + c] /= sum;
     }
   }
 
@@ -158,16 +161,17 @@ std::shared_ptr<Tensor> Tensor::softmax() {
   out->_backward = [self_ptr, out, batch_size, num_classes]() {
     if (self_ptr->requires_grad) {
       for (size_t b = 0; b < batch_size; b++) {
+        size_t base = b * num_classes;
         for (size_t i = 0; i < num_classes; i++) {
-          float s_i = out->data[b * num_classes + i];
+          float s_i = out->data[base + i];
           float grad_sum = 0.0f;
           for (size_t j = 0; j < num_classes; j++) {
-            float s_j = out->data[b * num_classes + j];
+            float s_j = out->data[base + j];
             float dsoftmax = (i == j) ? s_i * (1 - s_i) : -s_i * s_j;
-            grad_sum += (dsoftmax * out->grad[b * num_classes + j]);
+            grad_sum += (dsoftmax * out->grad[base + j]);
           }
 
-          self_ptr->grad[b * num_classes + i] += (grad_sum);
+          self_ptr->grad[base + i] += (grad_sum);
         }
       }
     }
