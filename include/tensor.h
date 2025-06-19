@@ -62,6 +62,7 @@ public:
   std::shared_ptr<Tensor> reshape(const std::vector<size_t> &shape);
 
   std::shared_ptr<Tensor> mse_loss(std::shared_ptr<Tensor> target);
+  std::shared_ptr<Tensor> cross_entropy_loss(std::shared_ptr<Tensor> target);
 
   static bool can_broadcast(const std::vector<size_t> shape1,
                             const std::vector<size_t> shape2);
@@ -90,6 +91,8 @@ std::shared_ptr<Tensor> make_const(const std::vector<size_t> &shape, float val,
 std::shared_ptr<Tensor> mse_loss(std::shared_ptr<Tensor> predicted,
                                  std::shared_ptr<Tensor> target);
 
+std::shared_ptr<Tensor> cross_entropy_loss(std::shared_ptr<Tensor> predicted,
+                                           std::shared_ptr<Tensor> target);
 std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> a,
                                   std::shared_ptr<Tensor> b);
 
