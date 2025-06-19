@@ -1,4 +1,6 @@
-# Vayu
+<img src="https://raw.githubusercontent.com/thevoxium/vayu/refs/heads/main/logo2.png" alt="Project Logo" width="" style="border-radius: 50%; float: left; margin-right: 15px; margin-bottom: -10px;" />
+
+
 
 **A lightweight deep learning framework built from scratch in C++**
 
