@@ -61,9 +61,6 @@ Tensor::cross_entropy_loss(std::shared_ptr<Tensor> target) {
       }
     }
   };
-  out->_backward = [self_ptr, target, batch_size, num_classes]() {
-
-  };
   return out;
 }
 
