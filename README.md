@@ -6,7 +6,7 @@
 
 
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Complete Neural Network Example
 
