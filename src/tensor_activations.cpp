@@ -145,9 +145,13 @@ std::shared_ptr<Tensor> Tensor::softmax() {
     float sum = 0.0f;
 
     for (size_t c = 0; c < num_classes; c++) {
-      float val = expf(this->data[base + c] - max_val);
-      sum += val;
-      out->data[base + c] = val;
+      float x = this->data[base + c];
+      x = 1.0f +
+          x * (1.0f +
+               x * (0.5f + x * (1.0f / 6.0f +
+                                x * (1.0f / 24.0f + x * (1.0f / 120.0f)))));
+      sum += x;
+      out->data[base + c] = x;
     }
     for (size_t c = 0; c < num_classes; c++) {
       out->data[base + c] /= sum;
@@ -157,21 +161,18 @@ std::shared_ptr<Tensor> Tensor::softmax() {
   auto self_ptr = shared_from_this();
   out->_prev = {shared_from_this()};
   out->_op = "softmax";
-
   out->_backward = [self_ptr, out, batch_size, num_classes]() {
     if (self_ptr->requires_grad) {
       for (size_t b = 0; b < batch_size; b++) {
         size_t base = b * num_classes;
+        float dot_prod = 0.0f;
+        for (size_t i = 0; i < num_classes; i++) {
+          dot_prod += (out->data[base + i] * out->grad[base + i]);
+        }
+
         for (size_t i = 0; i < num_classes; i++) {
           float s_i = out->data[base + i];
-          float grad_sum = 0.0f;
-          for (size_t j = 0; j < num_classes; j++) {
-            float s_j = out->data[base + j];
-            float dsoftmax = (i == j) ? s_i * (1 - s_i) : -s_i * s_j;
-            grad_sum += (dsoftmax * out->grad[base + j]);
-          }
-
-          self_ptr->grad[base + i] += (grad_sum);
+          self_ptr->grad[base + i] += (s_i * (out->grad[base + i] - dot_prod));
         }
       }
     }
