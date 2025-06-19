@@ -145,13 +145,9 @@ std::shared_ptr<Tensor> Tensor::softmax() {
     float sum = 0.0f;
 
     for (size_t c = 0; c < num_classes; c++) {
-      float x = this->data[base + c];
-      x = 1.0f +
-          x * (1.0f +
-               x * (0.5f + x * (1.0f / 6.0f +
-                                x * (1.0f / 24.0f + x * (1.0f / 120.0f)))));
-      sum += x;
-      out->data[base + c] = x;
+      float exp_val = std::exp(this->data[base + c] - max_val);
+      sum += exp_val;
+      out->data[base + c] = exp_val;
     }
     for (size_t c = 0; c < num_classes; c++) {
       out->data[base + c] /= sum;
