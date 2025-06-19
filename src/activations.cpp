@@ -19,3 +19,9 @@ std::shared_ptr<Tensor> Tanh::forward(std::shared_ptr<Tensor> input) {
 }
 void Tanh::zero_grad() {}
 std::vector<std::shared_ptr<Tensor>> Tanh::parameters() { return {}; }
+
+std::shared_ptr<Tensor> Softmax::forward(std::shared_ptr<Tensor> input) {
+  return input->softmax();
+}
+void Softmax::zero_grad() {}
+std::vector<std::shared_ptr<Tensor>> Softmax::parameters() { return {}; }

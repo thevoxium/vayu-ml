@@ -1,4 +1,6 @@
 .DS_Store
+torch_cmp.py
+examples/new.cpp
 grad*
 grad.dSYM/
 grad.prof

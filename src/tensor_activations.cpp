@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdlib>
+#include <limits>
 #include <memory>
 #ifdef __APPLE__
 #include <arm_neon.h>
@@ -128,3 +129,53 @@ std::shared_ptr<Tensor> Tensor::tanh() {
 }
 
 std::shared_ptr<Tensor> tanh(std::shared_ptr<Tensor> a) { return a->tanh(); }
+
+std::shared_ptr<Tensor> Tensor::softmax() {
+  auto out = std::make_shared<Tensor>(this->shape, this->requires_grad);
+  size_t batch_size = this->shape[0], num_classes = this->shape[1];
+  for (size_t b = 0; b < batch_size; b++) {
+    float max_val = -std::numeric_limits<float>::infinity();
+    for (size_t c = 0; c < num_classes; c++) {
+      max_val = std::max(max_val, this->data[b * num_classes + c]);
+    }
+
+    float sum = 0.0f;
+
+    for (size_t c = 0; c < num_classes; c++) {
+      float val = expf(this->data[b * num_classes + c] - max_val);
+      sum += val;
+      out->data[b * num_classes + c] = val;
+    }
+    for (size_t c = 0; c < num_classes; c++) {
+      out->data[b * num_classes + c] /= sum;
+    }
+  }
+
+  auto self_ptr = shared_from_this();
+  out->_prev = {shared_from_this()};
+  out->_op = "softmax";
+
+  out->_backward = [self_ptr, out, batch_size, num_classes]() {
+    if (self_ptr->requires_grad) {
+      for (size_t b = 0; b < batch_size; b++) {
+        for (size_t i = 0; i < num_classes; i++) {
+          float s_i = out->data[b * num_classes + i];
+          float grad_sum = 0.0f;
+          for (size_t j = 0; j < num_classes; j++) {
+            float s_j = out->data[b * num_classes + j];
+            float dsoftmax = (i == j) ? s_i * (1 - s_i) : -s_i * s_j;
+            grad_sum += (dsoftmax * out->grad[b * num_classes + j]);
+          }
+
+          self_ptr->grad[b * num_classes + i] += (grad_sum);
+        }
+      }
+    }
+  };
+
+  return out;
+}
+
+std::shared_ptr<Tensor> softmax(std::shared_ptr<Tensor> a) {
+  return a->softmax();
+}
