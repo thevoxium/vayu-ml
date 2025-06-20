@@ -427,7 +427,6 @@ float loss_value = loss->data[0];
 
 ### Optimizers
 
-#### Stochastic Gradient Descent (SGD)
 
 ```cpp
 // Get model parameters
@@ -438,6 +437,8 @@ auto params = model.parameters();
 // Create SGD optimizer
 float learning_rate = 0.01f;
 SGD optimizer(params, learning_rate);
+// Or you can use Adam
+//Adam optimizer(params);
 
 // Training step
 auto loss = compute_loss();  // Your loss computation
