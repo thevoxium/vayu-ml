@@ -64,26 +64,43 @@ public:
 class Adam : public Optimiser {
 private:
   float learning_rate, beta1, beta2, eps;
-  float time_step;
+  int time_step;
+  std::vector<std::vector<float>> m_vectors;
+  std::vector<std::vector<float>> v_vectors;
+  float beta1_correction, beta2_correction;
 
 public:
   Adam(std::vector<std::shared_ptr<Tensor>> parameters, float lr = 3e-4,
        float beta1 = 0.9, float beta2 = 0.999, float eps = 1e-8)
       : learning_rate(lr), beta1(beta1), beta2(beta2), eps(eps), time_step(0) {
     params = parameters;
+
+    m_vectors.reserve(params.size());
+    v_vectors.reserve(params.size());
+    for (auto &param : params) {
+      m_vectors.emplace_back(param->numel(), 0.0f);
+      v_vectors.emplace_back(param->numel(), 0.0f);
+    }
   }
 
   void step() override {
     time_step++;
-    for (auto &param : params) {
-      std::vector<float> m, v;
-      m.resize(param->numel(), 0.0f);
-      v.resize(param->numel(), 0.0f);
-      for (size_t i = 0; i < param->numel(); i++) {
+
+    beta1_correction = 1.0f - std::pow(beta1, time_step);
+    beta2_correction = 1.0f - std::pow(beta2, time_step);
+
+    for (size_t param_idx = 0; param_idx < params.size(); param_idx++) {
+      auto &param = params[param_idx];
+      auto &m = m_vectors[param_idx];
+      auto &v = v_vectors[param_idx];
+
+      const size_t numel = param->numel();
+
+      for (size_t i = 0; i < numel; i++) {
         m[i] = beta1 * m[i] + (1 - beta1) * param->grad[i];
         v[i] = beta2 * v[i] + (1 - beta2) * param->grad[i] * param->grad[i];
-        float m_hat = m[i] / (1.0f - std::pow(beta1, time_step));
-        float v_hat = v[i] / (1.0f - std::pow(beta2, time_step));
+        const float m_hat = m[i] / beta1_correction;
+        const float v_hat = v[i] / beta2_correction;
         param->data[i] -= learning_rate * m_hat / (std::sqrt(v_hat) + eps);
       }
     }
