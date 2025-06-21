@@ -16,6 +16,7 @@ public:
     for (size_t i = 0; i < 256; i++) {
       vocab[i] = std::string(1, static_cast<char>(i));
     }
+    vocab[50256] = "<|endoftext|>";
   }
 
   std::map<std::pair<int, int>, int>
