@@ -8,4 +8,5 @@
 #include "optimiser.h"
 #include "sequential.h"
 #include "tensor.h"
+#include "tokenizer.h"
 #endif // !VAYU_H
