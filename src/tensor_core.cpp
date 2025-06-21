@@ -38,7 +38,14 @@ Tensor::Tensor(const std::vector<size_t> &shape, bool requires_grad)
   _backward = []() {};
 }
 
-float Tensor::operator[](size_t idx) { return data[idx]; }
+std::shared_ptr<Tensor> Tensor::operator[](size_t idx) {
+  auto out = std::make_shared<Tensor>(std::vector<size_t>{1, this->shape[1]},
+                                      this->requires_grad);
+  for (size_t i = 0; i < this->shape[1]; i++) {
+    out->data[i] = this->data[idx * this->shape[0] + i];
+  }
+  return out;
+}
 
 void Tensor::init_grad() {
   if (requires_grad && grad.empty()) {

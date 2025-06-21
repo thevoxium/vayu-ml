@@ -41,7 +41,7 @@ public:
   std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> operator-(std::shared_ptr<Tensor> other);
-  float operator[](size_t idx);
+  std::shared_ptr<Tensor> operator[](size_t idx);
 
   void init_grad();
   void backward();
