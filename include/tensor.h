@@ -70,6 +70,11 @@ public:
                                              const std::vector<size_t> shape2);
 
   friend std::ostream &operator<<(std::ostream &os, const Tensor &t);
+  void print_shape() {
+    std::cout << "(" + std::to_string(shape[0]) + ", " +
+                     std::to_string(shape[1]) + ")"
+              << std::endl;
+  }
 };
 
 std::shared_ptr<Tensor> tensor(const std::vector<float> &data,
