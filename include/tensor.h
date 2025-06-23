@@ -31,6 +31,7 @@ public:
   std::function<void()> _backward;
   std::set<std::shared_ptr<Tensor>> _prev;
   std::string _op;
+  int ndim;
   bool requires_grad;
 
   Tensor(const std::vector<size_t> &shape, bool requires_grad = true);

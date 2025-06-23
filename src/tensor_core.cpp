@@ -12,6 +12,7 @@ Tensor::Tensor(const std::vector<float> &data, const std::vector<size_t> &shape,
                bool requires_grad)
     : data(data), shape(shape), requires_grad(requires_grad), _op("") {
   cached_size = 1;
+  ndim = shape.size();
   for (auto dim : shape)
     cached_size *= dim;
   assert(data.size() == cached_size);
@@ -26,6 +27,7 @@ Tensor::Tensor(const std::vector<float> &data, const std::vector<size_t> &shape,
 Tensor::Tensor(const std::vector<size_t> &shape, bool requires_grad)
     : shape(shape), requires_grad(requires_grad), _op("") {
   cached_size = 1;
+  ndim = shape.size();
   for (auto dim : shape)
     cached_size *= dim;
   data.reserve(cached_size);
