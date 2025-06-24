@@ -68,31 +68,33 @@ public:
 
   std::vector<size_t> get_strides() { return strides; }
   size_t numel() const { return cached_size; }
-  std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> other);
+
+  std::shared_ptr<Tensor> operator[](size_t idx);
   std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> operator-(std::shared_ptr<Tensor> other);
-  std::shared_ptr<Tensor> operator[](size_t idx);
-
-  void init_grad();
-  void backward();
-  void zero_grad();
-  void clear_graph();
+  std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> other);
 
   std::shared_ptr<Tensor> pow(float exponent);
   std::shared_ptr<Tensor> exp();
   std::shared_ptr<Tensor> log();
 
-  std::shared_ptr<Tensor> mm(std::shared_ptr<Tensor> other, bool fast = true);
   std::shared_ptr<Tensor> relu();
   std::shared_ptr<Tensor> tanh();
-  std::shared_ptr<Tensor> softmax();
   std::shared_ptr<Tensor> sigmoid();
+  std::shared_ptr<Tensor> softmax();
+
+  std::shared_ptr<Tensor> mm(std::shared_ptr<Tensor> other, bool fast = true);
   std::shared_ptr<Tensor> sum();
   std::shared_ptr<Tensor> transpose();
   std::shared_ptr<Tensor> reshape(const std::vector<size_t> &shape);
 
   std::shared_ptr<Tensor> mse_loss(std::shared_ptr<Tensor> target);
   std::shared_ptr<Tensor> cross_entropy_loss(std::shared_ptr<Tensor> target);
+
+  void init_grad();
+  void backward();
+  void zero_grad();
+  void clear_graph();
 
   static bool can_broadcast(const std::vector<size_t> shape1,
                             const std::vector<size_t> shape2);
@@ -110,13 +112,14 @@ public:
 std::shared_ptr<Tensor> tensor(const std::vector<float> &data,
                                const std::vector<size_t> &shape,
                                bool requires_grad);
-
 std::shared_ptr<Tensor> tensor(const std::vector<size_t> &shape,
                                bool requires_grad);
-
 std::shared_ptr<Tensor> empty(const std::vector<size_t> &shape,
                               bool requires_grad = true);
-
+std::shared_ptr<Tensor> ones(const std::vector<size_t> &shape,
+                             bool requires_grad = true);
+std::shared_ptr<Tensor> full(const std::vector<size_t> &shape, float val,
+                             bool requires_grad = true);
 std::shared_ptr<Tensor> asvector(const std::vector<std::vector<float>> &input,
                                  bool requires_grad = true);
 std::shared_ptr<Tensor> arange(int start, int end, size_t step = 1,
@@ -128,33 +131,27 @@ std::shared_ptr<Tensor> random_tensor(const std::vector<size_t> &shape,
                                       bool requires_grad = true,
                                       float min_val = 0.0f,
                                       float max_value = 1.0f);
-std::shared_ptr<Tensor> ones(const std::vector<size_t> &shape,
-                             bool requires_grad = true);
 
-std::shared_ptr<Tensor> full(const std::vector<size_t> &shape, float val,
-                             bool requires_grad = true);
-
-std::shared_ptr<Tensor> mse_loss(std::shared_ptr<Tensor> predicted,
-                                 std::shared_ptr<Tensor> target);
-
-std::shared_ptr<Tensor> cross_entropy_loss(std::shared_ptr<Tensor> predicted,
-                                           std::shared_ptr<Tensor> target);
 std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> a,
                                   std::shared_ptr<Tensor> b);
-
 std::shared_ptr<Tensor> operator-(std::shared_ptr<Tensor> a,
                                   std::shared_ptr<Tensor> b);
 std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> a,
                                   std::shared_ptr<Tensor> b);
+
+std::shared_ptr<Tensor> pow(std::shared_ptr<Tensor> base, float exponent);
+std::shared_ptr<Tensor> exp(std::shared_ptr<Tensor> base);
+std::shared_ptr<Tensor> log(std::shared_ptr<Tensor> num);
 
 std::shared_ptr<Tensor> relu(std::shared_ptr<Tensor> a);
 std::shared_ptr<Tensor> sigmoid(std::shared_ptr<Tensor> a);
 std::shared_ptr<Tensor> softmax(std::shared_ptr<Tensor> a);
 std::shared_ptr<Tensor> tanh(std::shared_ptr<Tensor> a);
 
-std::shared_ptr<Tensor> pow(std::shared_ptr<Tensor> base, float exponent);
-std::shared_ptr<Tensor> exp(std::shared_ptr<Tensor> base);
-std::shared_ptr<Tensor> log(std::shared_ptr<Tensor> num);
+std::shared_ptr<Tensor> mse_loss(std::shared_ptr<Tensor> predicted,
+                                 std::shared_ptr<Tensor> target);
+std::shared_ptr<Tensor> cross_entropy_loss(std::shared_ptr<Tensor> predicted,
+                                           std::shared_ptr<Tensor> target);
 
 template <typename T> bool is_tensor(const T &obj) {
   if constexpr (std::is_same_v<T, std::shared_ptr<Tensor>>) {
