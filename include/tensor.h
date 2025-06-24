@@ -23,6 +23,17 @@
 class Tensor : public std::enable_shared_from_this<Tensor> {
 private:
   size_t cached_size;
+  std::vector<size_t> strides;
+
+  void compute_strides() {
+    strides.resize(shape.size());
+    if (shape.empty() == false) {
+      strides.back() = 1;
+      for (int i = shape.size() - 2; i >= 0; i--) {
+        strides[i] = strides[i + 1] * shape[i + 1];
+      }
+    }
+  }
 
 public:
   std::vector<float> data;
@@ -38,6 +49,7 @@ public:
   Tensor(const std::vector<float> &data, const std::vector<size_t> &shape,
          bool requires_grad = true);
 
+  std::vector<size_t> get_strides() { return strides; }
   size_t numel() const { return cached_size; }
   std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> other);

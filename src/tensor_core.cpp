@@ -16,7 +16,7 @@ Tensor::Tensor(const std::vector<float> &data, const std::vector<size_t> &shape,
   for (auto dim : shape)
     cached_size *= dim;
   assert(data.size() == cached_size);
-
+  compute_strides();
   if (requires_grad) {
     grad.reserve(cached_size);
     grad.resize(cached_size, 0.0f);
@@ -30,6 +30,7 @@ Tensor::Tensor(const std::vector<size_t> &shape, bool requires_grad)
   ndim = shape.size();
   for (auto dim : shape)
     cached_size *= dim;
+  compute_strides();
   data.reserve(cached_size);
   data.resize(cached_size, 0.0f);
   if (requires_grad) {
