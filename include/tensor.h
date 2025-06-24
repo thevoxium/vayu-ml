@@ -58,7 +58,15 @@ public:
     return idx;
   }
 
-  std::vector<size_t> get_strides() { return strides; }
+  std::vector<size_t> unflatten_index(size_t &idx) const {
+    std::vector<size_t> indices(shape.size());
+    for (size_t i = 0; i < shape.size(); ++i) {
+      indices[i] = (idx / strides[i]) % shape[i];
+    }
+    return indices;
+  }
+
+  std::vector<int> std::vector<size_t> get_strides() { return strides; }
   size_t numel() const { return cached_size; }
   std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> other);
