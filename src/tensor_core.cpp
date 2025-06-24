@@ -187,39 +187,6 @@ std::shared_ptr<Tensor> random_tensor(const std::vector<size_t> &shape,
   return std::make_shared<Tensor>(data, shape, requires_grad);
 }
 
-std::ostream &operator<<(std::ostream &os, const Tensor &t) {
-  os << "Tensor(data: \n";
-  size_t rows = t.shape[0];
-  size_t cols = t.shape[1];
-
-  os << "[";
-  for (size_t i = 0; i < rows; i++) {
-    if (i > 0)
-      os << " "; // Indentation for subsequent rows
-    os << "[";
-    for (size_t j = 0; j < cols; j++) {
-      size_t index = i * cols + j;
-      os << t.data[index];
-      if (j != cols - 1)
-        os << ", ";
-    }
-    os << "]";
-    if (i != rows - 1)
-      os << ",\n";
-  }
-  os << "]";
-
-  os << ",\nrequires_grad: " << std::boolalpha << t.requires_grad
-     << ", shape: (";
-  for (size_t i = 0; i < t.shape.size(); i++) {
-    os << t.shape[i];
-    if (i != t.shape.size() - 1)
-      os << ", ";
-  }
-  os << "))";
-  return os;
-}
-
 std::shared_ptr<Tensor> tensor(const std::vector<float> &data,
                                const std::vector<size_t> &shape,
                                bool requires_grad) {
@@ -262,4 +229,42 @@ std::shared_ptr<Tensor> arange(int start, int end, size_t step,
     curr += step;
   }
   return out;
+}
+
+std::ostream &operator<<(std::ostream &os, const Tensor &t) {
+  os << "Tensor(";
+
+  std::function<void(size_t, size_t, const std::vector<size_t> &)>
+      print_recursive =
+          [&](size_t offset, size_t dim, const std::vector<size_t> &coords) {
+            if (dim == t.shape.size() - 1) {
+              // Print the innermost dimension
+              os << "[";
+              for (size_t i = 0; i < t.shape[dim]; ++i) {
+                os << t.data[offset + i];
+                if (i < t.shape[dim] - 1)
+                  os << ", ";
+              }
+              os << "]";
+            } else {
+              os << "[";
+              for (size_t i = 0; i < t.shape[dim]; ++i) {
+                if (i > 0)
+                  os << ",\n" << std::string(dim + 1, ' ');
+                size_t new_offset = offset + i * t.strides[dim];
+                print_recursive(new_offset, dim + 1, coords);
+              }
+              os << "]";
+            }
+          };
+
+  print_recursive(0, 0, {});
+  os << ", shape: (";
+  for (size_t i = 0; i < t.shape.size(); ++i) {
+    os << t.shape[i];
+    if (i < t.shape.size() - 1)
+      os << ", ";
+  }
+  os << "), requires_grad: " << t.requires_grad << ")";
+  return os;
 }
