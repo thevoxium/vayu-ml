@@ -41,6 +41,17 @@ Tensor::Tensor(const std::vector<size_t> &shape, bool requires_grad)
   _backward = []() {};
 }
 
+std::shared_ptr<Tensor> empty(const std::vector<size_t> &shape,
+                              bool requires_grad) {
+  size_t total_size = 1;
+  for (auto dim : shape) {
+    total_size *= dim;
+  }
+
+  std::vector<float> data(total_size, 0.0f);
+  return std::make_shared<Tensor>(data, shape, requires_grad);
+}
+
 std::shared_ptr<Tensor> Tensor::operator[](size_t idx) {
   auto out = std::make_shared<Tensor>(std::vector<size_t>{1, this->shape[1]},
                                       this->requires_grad);

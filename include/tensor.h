@@ -113,6 +113,10 @@ std::shared_ptr<Tensor> tensor(const std::vector<float> &data,
 
 std::shared_ptr<Tensor> tensor(const std::vector<size_t> &shape,
                                bool requires_grad);
+
+std::shared_ptr<Tensor> empty(const std::vector<size_t> &shape,
+                              bool requires_grad = true);
+
 std::shared_ptr<Tensor> random_tensor(const std::vector<size_t> &shape,
                                       bool requires_grad = true,
                                       float min_val = 0.0f,
