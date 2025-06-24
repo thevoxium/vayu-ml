@@ -49,6 +49,15 @@ public:
   Tensor(const std::vector<float> &data, const std::vector<size_t> &shape,
          bool requires_grad = true);
 
+  size_t get_flatten_index(const std::vector<int> &indices) const {
+    assert(indices.size() == shape.size());
+    size_t idx = 0;
+    for (int i = 0; i < indices.size(); i++) {
+      idx += indices[i] * strides[i];
+    }
+    return idx;
+  }
+
   std::vector<size_t> get_strides() { return strides; }
   size_t numel() const { return cached_size; }
   std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> other);
