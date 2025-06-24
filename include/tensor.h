@@ -66,7 +66,7 @@ public:
     return indices;
   }
 
-  std::vector<int> std::vector<size_t> get_strides() { return strides; }
+  std::vector<size_t> get_strides() { return strides; }
   size_t numel() const { return cached_size; }
   std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> other);
