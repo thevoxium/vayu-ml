@@ -1,0 +1,32 @@
+# Todo List
+
+- neg
+- log
+- log2
+- exp
+- exp2
+- sqrt
+- sin
+- cos
+- tan
+- trunc
+- ceil
+- floor
+- round
+- square
+- clamp
+- sign
+- abs
+- reciprocal
+- relu
+- sigmoid
+- elu
+- swish
+- tanh
+- gelu
+- leaky relu
+- add
+- sub
+- mul
+- div
+- pow
