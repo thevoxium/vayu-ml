@@ -121,11 +121,11 @@ std::shared_ptr<Tensor> random_tensor(const std::vector<size_t> &shape,
                                       bool requires_grad = true,
                                       float min_val = 0.0f,
                                       float max_value = 1.0f);
-std::shared_ptr<Tensor> make_ones(const std::vector<size_t> &shape,
-                                  bool requires_grad = true);
+std::shared_ptr<Tensor> ones(const std::vector<size_t> &shape,
+                             bool requires_grad = true);
 
-std::shared_ptr<Tensor> make_const(const std::vector<size_t> &shape, float val,
-                                   bool requires_grad = true);
+std::shared_ptr<Tensor> full(const std::vector<size_t> &shape, float val,
+                             bool requires_grad = true);
 
 std::shared_ptr<Tensor> mse_loss(std::shared_ptr<Tensor> predicted,
                                  std::shared_ptr<Tensor> target);
@@ -159,6 +159,6 @@ template <typename T> bool is_tensor(const T &obj) {
 
 std::shared_ptr<Tensor> asvector(const std::vector<std::vector<float>> &input,
                                  bool requires_grad = true);
-std::shared_ptr<Tensor> range(int start, int end, size_t step = 1,
-                              bool requires_grad = true);
+std::shared_ptr<Tensor> arange(int start, int end, size_t step = 1,
+                               bool requires_grad = true);
 #endif // !TENSOR_H

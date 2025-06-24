@@ -145,8 +145,8 @@ std::vector<size_t> Tensor::broadcast_shape(const std::vector<size_t> shape1,
   return result_shape;
 }
 
-std::shared_ptr<Tensor> make_ones(const std::vector<size_t> &shape,
-                                  bool requires_grad) {
+std::shared_ptr<Tensor> ones(const std::vector<size_t> &shape,
+                             bool requires_grad) {
   size_t total_size = 1;
   for (auto dim : shape) {
     total_size *= dim;
@@ -156,8 +156,8 @@ std::shared_ptr<Tensor> make_ones(const std::vector<size_t> &shape,
   return std::make_shared<Tensor>(data, shape, requires_grad);
 }
 
-std::shared_ptr<Tensor> make_const(const std::vector<size_t> &shape, float val,
-                                   bool requires_grad) {
+std::shared_ptr<Tensor> full(const std::vector<size_t> &shape, float val,
+                             bool requires_grad) {
   size_t total_size = 1;
   for (auto dim : shape) {
     total_size *= dim;
@@ -252,10 +252,10 @@ std::shared_ptr<Tensor> asvector(const std::vector<std::vector<float>> &input,
   return out;
 }
 
-std::shared_ptr<Tensor> range(int start, int end, size_t step,
-                              bool requires_grad) {
+std::shared_ptr<Tensor> arange(int start, int end, size_t step,
+                               bool requires_grad) {
   auto out = std::make_shared<Tensor>(
-      std::vector<size_t>{1, (end - start + step - 1) / step}, requires_grad);
+      std::vector<size_t>{(end - start + step - 1) / step}, requires_grad);
   int curr = start;
   for (int i = 0; i < out->numel(); i++) {
     out->data[i] = curr;
