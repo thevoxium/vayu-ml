@@ -74,6 +74,7 @@ public:
   std::shared_ptr<Tensor> operator-(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> other);
 
+  std::shared_ptr<Tensor> neg();
   std::shared_ptr<Tensor> pow(float exponent);
   std::shared_ptr<Tensor> exp();
   std::shared_ptr<Tensor> log();
@@ -139,6 +140,7 @@ std::shared_ptr<Tensor> operator-(std::shared_ptr<Tensor> a,
 std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> a,
                                   std::shared_ptr<Tensor> b);
 
+std::shared_ptr<Tensor> neg(std::shared_ptr<Tensor> a);
 std::shared_ptr<Tensor> pow(std::shared_ptr<Tensor> base, float exponent);
 std::shared_ptr<Tensor> exp(std::shared_ptr<Tensor> base);
 std::shared_ptr<Tensor> log(std::shared_ptr<Tensor> num);

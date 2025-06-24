@@ -6,6 +6,26 @@
 #include <memory>
 #include <vector>
 
+std::shared_ptr<Tensor> Tensor::neg() {
+  auto out = std::make_shared<Tensor>(this->shape, this->requires_grad);
+  for (size_t i = 0; i < out->numel(); i++) {
+    out->data[i] = -1.0f * this->data[i];
+  }
+  out->_prev = {shared_from_this()};
+  out->_op = "neg";
+  auto self_ptr = shared_from_this();
+  out->_backward = [self_ptr, out]() {
+    if (self_ptr->requires_grad) {
+      for (size_t i = 0; i < out->numel(); i++) {
+        self_ptr->grad[i] += (-out->grad[i]);
+      }
+    }
+  };
+  return out;
+}
+
+std::shared_ptr<Tensor> neg(std::shared_ptr<Tensor> a) { return a->neg(); }
+
 std::shared_ptr<Tensor> Tensor::pow(float exponent) {
   auto out = std::make_shared<Tensor>(this->shape, this->requires_grad);
   for (size_t i = 0; i < this->numel(); i++) {
