@@ -117,6 +117,13 @@ std::shared_ptr<Tensor> tensor(const std::vector<size_t> &shape,
 std::shared_ptr<Tensor> empty(const std::vector<size_t> &shape,
                               bool requires_grad = true);
 
+std::shared_ptr<Tensor> asvector(const std::vector<std::vector<float>> &input,
+                                 bool requires_grad = true);
+std::shared_ptr<Tensor> arange(int start, int end, size_t step = 1,
+                               bool requires_grad = true);
+std::shared_ptr<Tensor> linspace(double start = 0.0, double stop = 2.0,
+                                 size_t num_steps = 1,
+                                 bool requires_grad = true);
 std::shared_ptr<Tensor> random_tensor(const std::vector<size_t> &shape,
                                       bool requires_grad = true,
                                       float min_val = 0.0f,
@@ -157,8 +164,4 @@ template <typename T> bool is_tensor(const T &obj) {
   }
 }
 
-std::shared_ptr<Tensor> asvector(const std::vector<std::vector<float>> &input,
-                                 bool requires_grad = true);
-std::shared_ptr<Tensor> arange(int start, int end, size_t step = 1,
-                               bool requires_grad = true);
 #endif // !TENSOR_H

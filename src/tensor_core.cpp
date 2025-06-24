@@ -231,6 +231,25 @@ std::shared_ptr<Tensor> arange(int start, int end, size_t step,
   return out;
 }
 
+std::shared_ptr<Tensor> linspace(double start, double stop, size_t num_steps,
+                                 bool requires_grad) {
+  auto out =
+      std::make_shared<Tensor>(std::vector<size_t>{num_steps}, requires_grad);
+
+  if (num_steps == 1) {
+    out->data[0] = start;
+    return out;
+  }
+
+  double step_size = (stop - start) / (num_steps - 1);
+
+  for (size_t i = 0; i < num_steps; i++) {
+    out->data[i] = start + i * step_size;
+  }
+
+  return out;
+}
+
 std::ostream &operator<<(std::ostream &os, const Tensor &t) {
   os << "Tensor(";
 
