@@ -12,7 +12,8 @@ Linear::Linear(size_t in_dim, size_t out_dim)
 
 std::shared_ptr<Tensor> Linear::forward(std::shared_ptr<Tensor> input) {
   auto f = input->mm(weights);
-  auto out = f + bias;
+  auto b = bias->broadcast(std::vector<size_t>{input->shape[0], out_dim});
+  auto out = f + b;
   return out;
 }
 
