@@ -35,6 +35,10 @@ private:
     }
   }
 
+  size_t
+  get_broadcast_source_index(const std::vector<size_t> &output_indices,
+                             const std::vector<size_t> &source_shape) const;
+
 public:
   std::vector<float> data;
   std::vector<float> grad;
@@ -118,6 +122,7 @@ public:
   void zero_grad();
   void clear_graph();
 
+  std::shared_ptr<Tensor> broadcast(const std::vector<size_t> &target_shape);
   static bool can_broadcast(const std::vector<size_t> shape1,
                             const std::vector<size_t> shape2);
   static std::vector<size_t> broadcast_shape(const std::vector<size_t> shape1,

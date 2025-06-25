@@ -120,6 +120,70 @@ void Tensor::backward() {
   }
 }
 
+std::shared_ptr<Tensor>
+Tensor::broadcast(const std::vector<size_t> &target_shape) {
+  if (this->shape == target_shape) {
+    return shared_from_this();
+  }
+  assert(can_broadcast(this->shape, target_shape) &&
+         "Cannot broadcast tensor to target shape");
+
+  auto out = std::make_shared<Tensor>(target_shape, this->requires_grad);
+
+  for (size_t i = 0; i < out->numel(); i++) {
+    auto output_indices = out->unflatten_index(i);
+    size_t source_idx = get_broadcast_source_index(output_indices, this->shape);
+    out->data[i] = this->data[source_idx];
+  }
+
+  out->_prev = {shared_from_this()};
+  out->_op = "broadcast";
+  auto self_ptr = shared_from_this();
+
+  out->_backward = [self_ptr, out, target_shape]() {
+    if (self_ptr->requires_grad) {
+      for (size_t i = 0; i < out->numel(); i++) {
+        auto output_indices = out->unflatten_index(i);
+        size_t source_idx = self_ptr->get_broadcast_source_index(
+            output_indices, self_ptr->shape);
+        self_ptr->grad[source_idx] += out->grad[i];
+      }
+    }
+  };
+
+  return out;
+}
+
+size_t Tensor::get_broadcast_source_index(
+    const std::vector<size_t> &output_indices,
+    const std::vector<size_t> &source_shape) const {
+  size_t source_idx = 0;
+  int output_dim = output_indices.size();
+  int source_dim = source_shape.size();
+
+  // Handle dimension alignment (broadcasting from right)
+  for (int i = 0; i < output_dim; i++) {
+    int source_axis = i - (output_dim - source_dim);
+
+    if (source_axis >= 0) {
+      // This dimension exists in source tensor
+      size_t coord;
+      if (source_shape[source_axis] == 1) {
+        // Broadcasted dimension - always use index 0
+        coord = 0;
+      } else {
+        // Normal dimension - use the output coordinate
+        coord = output_indices[i];
+      }
+      source_idx = source_idx * source_shape[source_axis] + coord;
+    }
+    // If source_axis < 0, this dimension doesn't exist in source (implicit size
+    // 1)
+  }
+
+  return source_idx;
+}
+
 bool Tensor::can_broadcast(const std::vector<size_t> shape1,
                            const std::vector<size_t> shape2) {
   int max_size = std::max(shape1.size(), shape2.size());
