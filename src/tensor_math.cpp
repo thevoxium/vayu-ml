@@ -6,6 +6,27 @@
 #include <memory>
 #include <vector>
 
+std::shared_ptr<Tensor> Tensor::log2() {
+  auto out = std::make_shared<Tensor>(this->shape, this->requires_grad);
+  for (size_t i = 0; i < out->numel(); i++) {
+    out->data[i] = std::log2(this->data[i]);
+  }
+  out->_prev = {shared_from_this()};
+  out->_op = "log2";
+  auto self_ptr = shared_from_this();
+  out->_backward = [self_ptr, out]() {
+    if (self_ptr->requires_grad) {
+      for (size_t i = 0; i < out->numel(); i++) {
+        self_ptr->grad[i] +=
+            (out->grad[i] / (self_ptr->data[i] * std::log(2.0) + 1e-8));
+      }
+    }
+  };
+  return out;
+}
+
+std::shared_ptr<Tensor> log2(std::shared_ptr<Tensor> a) { return a->log2(); }
+
 std::shared_ptr<Tensor> Tensor::neg() {
   auto out = std::make_shared<Tensor>(this->shape, this->requires_grad);
   for (size_t i = 0; i < out->numel(); i++) {

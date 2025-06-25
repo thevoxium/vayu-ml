@@ -1,6 +1,6 @@
 # Todo List
 
-- neg
+- ~neg~ implemented neg()
 - log
 - log2
 - exp
