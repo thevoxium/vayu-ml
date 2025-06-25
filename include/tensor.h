@@ -73,9 +73,25 @@ public:
   std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> operator-(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> other);
+  std::shared_ptr<Tensor> mul(float scalar);
+  std::shared_ptr<Tensor> div(float scalar);
+  std::shared_ptr<Tensor> clamp(float min_val, float max_val);
 
   std::shared_ptr<Tensor> neg();
   std::shared_ptr<Tensor> log2();
+  std::shared_ptr<Tensor> exp2();
+  std::shared_ptr<Tensor> sqrt();
+  std::shared_ptr<Tensor> sin();
+  std::shared_ptr<Tensor> cos();
+  std::shared_ptr<Tensor> tan();
+  std::shared_ptr<Tensor> trunc();
+  std::shared_ptr<Tensor> ceil();
+  std::shared_ptr<Tensor> floor();
+  std::shared_ptr<Tensor> round();
+  std::shared_ptr<Tensor> square();
+  std::shared_ptr<Tensor> sign();
+  std::shared_ptr<Tensor> abs();
+  std::shared_ptr<Tensor> reciprocal();
   std::shared_ptr<Tensor> pow(float exponent);
   std::shared_ptr<Tensor> exp();
   std::shared_ptr<Tensor> log();
@@ -84,6 +100,10 @@ public:
   std::shared_ptr<Tensor> tanh();
   std::shared_ptr<Tensor> sigmoid();
   std::shared_ptr<Tensor> softmax();
+  std::shared_ptr<Tensor> elu(float alpha = 1.0f);
+  std::shared_ptr<Tensor> swish();
+  std::shared_ptr<Tensor> gelu();
+  std::shared_ptr<Tensor> leaky_relu(float alpha = 0.01f);
 
   std::shared_ptr<Tensor> mm(std::shared_ptr<Tensor> other, bool fast = true);
   std::shared_ptr<Tensor> sum();
@@ -146,12 +166,33 @@ std::shared_ptr<Tensor> log2(std::shared_ptr<Tensor> a);
 std::shared_ptr<Tensor> pow(std::shared_ptr<Tensor> base, float exponent);
 std::shared_ptr<Tensor> exp(std::shared_ptr<Tensor> base);
 std::shared_ptr<Tensor> log(std::shared_ptr<Tensor> num);
-
+std::shared_ptr<Tensor> exp2(std::shared_ptr<Tensor> a);
+std::shared_ptr<Tensor> sqrt(std::shared_ptr<Tensor> a);
+std::shared_ptr<Tensor> sin(std::shared_ptr<Tensor> a);
+std::shared_ptr<Tensor> cos(std::shared_ptr<Tensor> a);
+std::shared_ptr<Tensor> tan(std::shared_ptr<Tensor> a);
+std::shared_ptr<Tensor> trunc(std::shared_ptr<Tensor> a);
+std::shared_ptr<Tensor> ceil(std::shared_ptr<Tensor> a);
+std::shared_ptr<Tensor> floor(std::shared_ptr<Tensor> a);
+std::shared_ptr<Tensor> round(std::shared_ptr<Tensor> a);
+std::shared_ptr<Tensor> square(std::shared_ptr<Tensor> a);
+std::shared_ptr<Tensor> sign(std::shared_ptr<Tensor> a);
+std::shared_ptr<Tensor> abs(std::shared_ptr<Tensor> a);
+std::shared_ptr<Tensor> reciprocal(std::shared_ptr<Tensor> a);
+std::shared_ptr<Tensor> mul(std::shared_ptr<Tensor> a, float scalar);
+std::shared_ptr<Tensor> div(std::shared_ptr<Tensor> a, float scalar);
+std::shared_ptr<Tensor> clamp(std::shared_ptr<Tensor> a, float min_val,
+                              float max_val);
 std::shared_ptr<Tensor> relu(std::shared_ptr<Tensor> a);
 std::shared_ptr<Tensor> sigmoid(std::shared_ptr<Tensor> a);
 std::shared_ptr<Tensor> softmax(std::shared_ptr<Tensor> a);
 std::shared_ptr<Tensor> tanh(std::shared_ptr<Tensor> a);
 
+std::shared_ptr<Tensor> elu(std::shared_ptr<Tensor> a, float alpha = 1.0f);
+std::shared_ptr<Tensor> swish(std::shared_ptr<Tensor> a);
+std::shared_ptr<Tensor> gelu(std::shared_ptr<Tensor> a);
+std::shared_ptr<Tensor> leaky_relu(std::shared_ptr<Tensor> a,
+                                   float alpha = 0.01f);
 std::shared_ptr<Tensor> mse_loss(std::shared_ptr<Tensor> predicted,
                                  std::shared_ptr<Tensor> target);
 std::shared_ptr<Tensor> cross_entropy_loss(std::shared_ptr<Tensor> predicted,
