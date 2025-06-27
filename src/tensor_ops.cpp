@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
+#include <iostream>
 #include <iterator>
 #include <memory>
 
@@ -119,4 +120,22 @@ std::shared_ptr<Tensor> operator-(std::shared_ptr<Tensor> a,
 std::shared_ptr<Tensor> operator*(std::shared_ptr<Tensor> a,
                                   std::shared_ptr<Tensor> b) {
   return a->operator*(b);
+}
+
+std::shared_ptr<Tensor> Tensor::gt(std::shared_ptr<Tensor> other) {
+  assert(this->shape == other->shape);
+  auto out = std::make_shared<Tensor>(this->shape, this->requires_grad |
+                                                       other->requires_grad);
+  for (size_t i = 0; i < this->numel(); i++) {
+    if (this->data[i] > other->data[i])
+      out->data[i] = 1.0f;
+    else
+      out->data[i] = 0.0f;
+  }
+  return out;
+}
+
+std::shared_ptr<Tensor> gt(std::shared_ptr<Tensor> a,
+                           std::shared_ptr<Tensor> b) {
+  return a->gt(b);
 }

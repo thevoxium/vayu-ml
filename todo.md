@@ -10,7 +10,7 @@ std::shared_ptr<Tensor> eq(std::shared_ptr<Tensor> other);
 std::shared_ptr<Tensor> ne(std::shared_ptr<Tensor> other);
 std::shared_ptr<Tensor> lt(std::shared_ptr<Tensor> other);
 std::shared_ptr<Tensor> le(std::shared_ptr<Tensor> other);
-std::shared_ptr<Tensor> gt(std::shared_ptr<Tensor> other);
+std::shared_ptr<Tensor> gt(std::shared_ptr<Tensor> other); /* DONE */
 std::shared_ptr<Tensor> ge(std::shared_ptr<Tensor> other);
 
 // Logical operations

@@ -73,6 +73,8 @@ public:
   std::vector<size_t> get_strides() { return strides; }
   size_t numel() const { return cached_size; }
 
+  std::shared_ptr<Tensor> gt(std::shared_ptr<Tensor> other);
+
   std::shared_ptr<Tensor> operator[](size_t idx);
   std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> operator-(std::shared_ptr<Tensor> other);
@@ -158,6 +160,9 @@ std::shared_ptr<Tensor> random_tensor(const std::vector<size_t> &shape,
                                       bool requires_grad = true,
                                       float min_val = 0.0f,
                                       float max_value = 1.0f);
+
+std::shared_ptr<Tensor> gt(std::shared_ptr<Tensor> a,
+                           std::shared_ptr<Tensor> b);
 
 std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> a,
                                   std::shared_ptr<Tensor> b);
