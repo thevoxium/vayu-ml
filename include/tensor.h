@@ -75,6 +75,12 @@ public:
 
   std::shared_ptr<Tensor> gt(std::shared_ptr<Tensor> other);
 
+  std::shared_ptr<Tensor> eq(std::shared_ptr<Tensor> other);
+  std::shared_ptr<Tensor> ne(std::shared_ptr<Tensor> other);
+  std::shared_ptr<Tensor> lt(std::shared_ptr<Tensor> other);
+  std::shared_ptr<Tensor> le(std::shared_ptr<Tensor> other);
+  std::shared_ptr<Tensor> ge(std::shared_ptr<Tensor> other);
+
   std::shared_ptr<Tensor> operator[](size_t idx);
   std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> other);
   std::shared_ptr<Tensor> operator-(std::shared_ptr<Tensor> other);
@@ -162,6 +168,16 @@ std::shared_ptr<Tensor> random_tensor(const std::vector<size_t> &shape,
                                       float max_value = 1.0f);
 
 std::shared_ptr<Tensor> gt(std::shared_ptr<Tensor> a,
+                           std::shared_ptr<Tensor> b);
+std::shared_ptr<Tensor> eq(std::shared_ptr<Tensor> a,
+                           std::shared_ptr<Tensor> b);
+std::shared_ptr<Tensor> ne(std::shared_ptr<Tensor> a,
+                           std::shared_ptr<Tensor> b);
+std::shared_ptr<Tensor> le(std::shared_ptr<Tensor> a,
+                           std::shared_ptr<Tensor> b);
+std::shared_ptr<Tensor> lt(std::shared_ptr<Tensor> a,
+                           std::shared_ptr<Tensor> b);
+std::shared_ptr<Tensor> ge(std::shared_ptr<Tensor> a,
                            std::shared_ptr<Tensor> b);
 
 std::shared_ptr<Tensor> operator+(std::shared_ptr<Tensor> a,

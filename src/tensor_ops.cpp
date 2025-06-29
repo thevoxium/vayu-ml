@@ -139,3 +139,93 @@ std::shared_ptr<Tensor> gt(std::shared_ptr<Tensor> a,
                            std::shared_ptr<Tensor> b) {
   return a->gt(b);
 }
+
+std::shared_ptr<Tensor> Tensor::eq(std::shared_ptr<Tensor> other) {
+  assert(this->shape == other->shape);
+  auto out = std::make_shared<Tensor>(this->shape, this->requires_grad |
+                                                       other->requires_grad);
+  for (size_t i = 0; i < this->numel(); i++) {
+    if (this->data[i] == other->data[i])
+      out->data[i] = 1.0f;
+    else
+      out->data[i] = 0.0f;
+  }
+  return out;
+}
+
+std::shared_ptr<Tensor> eq(std::shared_ptr<Tensor> a,
+                           std::shared_ptr<Tensor> b) {
+  return a->eq(b);
+}
+
+std::shared_ptr<Tensor> Tensor::ne(std::shared_ptr<Tensor> other) {
+  assert(this->shape == other->shape);
+  auto out = std::make_shared<Tensor>(this->shape, this->requires_grad |
+                                                       other->requires_grad);
+  for (size_t i = 0; i < this->numel(); i++) {
+    if (this->data[i] != other->data[i])
+      out->data[i] = 1.0f;
+    else
+      out->data[i] = 0.0f;
+  }
+  return out;
+}
+
+std::shared_ptr<Tensor> ne(std::shared_ptr<Tensor> a,
+                           std::shared_ptr<Tensor> b) {
+  return a->ne(b);
+}
+
+std::shared_ptr<Tensor> Tensor::lt(std::shared_ptr<Tensor> other) {
+  assert(this->shape == other->shape);
+  auto out = std::make_shared<Tensor>(this->shape, this->requires_grad |
+                                                       other->requires_grad);
+  for (size_t i = 0; i < this->numel(); i++) {
+    if (this->data[i] < other->data[i])
+      out->data[i] = 1.0f;
+    else
+      out->data[i] = 0.0f;
+  }
+  return out;
+}
+
+std::shared_ptr<Tensor> lt(std::shared_ptr<Tensor> a,
+                           std::shared_ptr<Tensor> b) {
+  return a->lt(b);
+}
+
+std::shared_ptr<Tensor> Tensor::le(std::shared_ptr<Tensor> other) {
+  assert(this->shape == other->shape);
+  auto out = std::make_shared<Tensor>(this->shape, this->requires_grad |
+                                                       other->requires_grad);
+  for (size_t i = 0; i < this->numel(); i++) {
+    if (this->data[i] <= other->data[i])
+      out->data[i] = 1.0f;
+    else
+      out->data[i] = 0.0f;
+  }
+  return out;
+}
+
+std::shared_ptr<Tensor> le(std::shared_ptr<Tensor> a,
+                           std::shared_ptr<Tensor> b) {
+  return a->le(b);
+}
+
+std::shared_ptr<Tensor> Tensor::ge(std::shared_ptr<Tensor> other) {
+  assert(this->shape == other->shape);
+  auto out = std::make_shared<Tensor>(this->shape, this->requires_grad |
+                                                       other->requires_grad);
+  for (size_t i = 0; i < this->numel(); i++) {
+    if (this->data[i] >= other->data[i])
+      out->data[i] = 1.0f;
+    else
+      out->data[i] = 0.0f;
+  }
+  return out;
+}
+
+std::shared_ptr<Tensor> ge(std::shared_ptr<Tensor> a,
+                           std::shared_ptr<Tensor> b) {
+  return a->ge(b);
+}
